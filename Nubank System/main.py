@@ -166,7 +166,28 @@ class CartaoCredito:
         print(f"Compra de R${transacao.valor:.2f} aprovada no cartão {self.mostrar_cartao_seguro()}.")
 
 
-#vinicius 
+#vinicius
+class Transferencia():
+    def __init__(self, descricao, valor):
+        self.descricao = descricao
+        self.valor = valor
+
+
+class Pix():
+    def __init__(self, chave, valor):
+        self.chave = chave
+        self.valor = valor
+
+class Emprestimo():
+    def __init__(self, tipo, valor):
+        self.tipo = tipo
+        self.valor = valor
+
+class Investimento():
+    def __init__ (self, tipo, valor):
+        self.tipo = tipo
+        self.valor = valor
+
 
 class Usuario:
     def __init__(self, id, nome, email, telefone):
@@ -289,6 +310,29 @@ cartao_4 = CartaoCredito("3333444455556666", "Ana Costa", "321", "08/28", 5000.0
 cartao_5 = CartaoCredito("7777888899990000", "Pedro Alves", "654", "01/31", 10000.00, "Visa", False)
 
 #vinicius
+transf = Transferencia("Transferencia automatica", 100)
+transf1 = Transferencia("Transferencia automatica", 500)
+transf2 = Transferencia("Transferencia automatica", 200)
+transf3 = Transferencia("Transferencia automatica", 350)
+transf4 = Transferencia("Transferencia automatica", 1.000)
+
+pic = Pix("11981353251", 1.000)
+pic1 = Pix("21981353251", 2.000)
+pic2 = Pix("31981353251", 2.500)
+pic3 = Pix("88779956896", 3.700)
+pic4 = Pix("55662256896", 500)
+
+emp = Emprestimo("Consignado", 10.000)
+emp1 = Emprestimo("Com garantia", 20.000)
+emp2 = Emprestimo("Com FGTS", 15.000)
+emp3 = Emprestimo("Cheque Especial", 11.000)
+emp4 = Emprestimo("Pessoal", 13.500)
+
+inv = Investimento("LCI/LCA", 100.000)
+inv1 = Investimento("CDB", 150.000)
+inv2 = Investimento("IPCA+", 120.000)
+inv3 = Investimento("Acoes", 130.000)
+inv4 = Investimento("FIIs", 500.000)
 
 u1 = Usuario(1, "João Silva", "joao@email.com", "11999999999")
 u2 = Usuario(2, "Maria Souza", "maria@email.com", "11988888888")
