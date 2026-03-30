@@ -2,36 +2,81 @@
 from datetime import datetime
 from enum import Enum
 
-
 class Cliente:
-    def __init__(self,nome,cpf):
-        self.nome = nome
-        self.cpf = cpf
+    def __init__(self, nome, cpf):
+        self.nome = nome #abstração
+        self._cpf = cpf  #encapsulamento
+
+    def mostrar_cpf(self):
+        return self._cpf
+
     def __str__(self):
-        return f"Cliente({self.nome}, {self.cpf})"   
+        return f"Cliente({self.nome}, {self._cpf})"
 
 
 class Conta:
-    def __init__(self,numero,saldo):
-        self.numero = numero 
-        self.saldo = saldo
-    def __str__(self):
-        return f"Conta({self.numero}, {self.saldo})" 
+    def __init__(self, numero, saldo, cliente):
+        self.numero = numero #abstração
+        self._saldo = saldo #encapsulamento
+        self.cliente = cliente
 
-class ContaCorrente:
-    def __init__(self,numero,saldo):
-        self.numero = numero 
-        self.saldo = saldo
-    def __str__(self):
-        return f"ContaCorrente({self.numero}, {self.saldo})"  
+    def depositar(self, valor):
+        if valor > 0:
+            self._saldo += valor
+            print(f"Depósito de R${valor:.2f} Realizado com sucesso!")
+        else:
+            print("Saldo Insuficiente.")
 
-class ContaPoupanca:
-    def __init__(self, numero, saldo):
-        self.numero = numero 
-        self.saldo = saldo    
+    def sacar(self, valor):
+        if valor > 0 and valor <= self._saldo:
+            self._saldo -= valor
+            print(f"Saque de R${valor:.2f} Realizado com sucesso!.")
+        else:
+            print("Saldo insuficiente ou valor inválido.")
+
+    def mostrar_saldo(self):
+        return self._saldo
 
     def __str__(self):
-        return f"ContaPoupanca({self.numero}, {self.saldo})"   
+        return f"Conta({self.numero}, Saldo: R${self._saldo:.2f}, Cliente: {self.cliente.nome})"
+
+
+class ContaCorrente(Conta): #herança
+    def __init__(self, numero, saldo, cliente, taxa_saque=3.2):
+        super().__init__(numero, saldo, cliente)
+        self.taxa_saque = taxa_saque
+
+    def sacar(self, valor): #polimorfismo
+        total = valor + self.taxa_saque
+        if valor > 0 and total <= self._saldo:
+            self._saldo -= total
+            print(f"Saque de R${valor:.2f} realizado com taxa de R${self.taxa_saque:.2f}.")
+        else:
+            print("Saldo insuficiente ou valor inválido.")
+
+    def __str__(self):
+        return f"ContaCorrente({self.numero}, Saldo: R${self._saldo:.2f}, Cliente: {self.cliente.nome})"
+
+
+class ContaPoupanca(Conta): #herança
+    def __init__(self, numero, saldo, cliente, rendimento=0.05):
+        super().__init__(numero, saldo, cliente)
+        self.rendimento = rendimento
+
+    def sacar(self, valor): #polimorfismo
+        if valor > 0 and valor <= self._saldo:
+            self._saldo -= valor
+            print(f"Saque de R${valor:.2f} realizado com sucesso na conta poupança.")
+        else:
+            print("Saldo insuficiente ou valor inválido.")
+
+    def aplicar_rendimento(self):
+        self._saldo += self._saldo * self.rendimento
+        print(f"Rendimento aplicado. Novo saldo: R${self._saldo:.2f}")
+
+    def __str__(self):
+        return f"ContaPoupanca({self.numero}, Saldo: R${self._saldo:.2f}, Cliente: {self.cliente.nome})"
+
 
 
 #gabriel
@@ -260,23 +305,23 @@ cliente3 = Cliente("cliente3" , "222.222.222-22")
 cliente4 = Cliente("cliente4" , "333.333.333-23")
 cliente5 = Cliente("cliente5" , "444.444.444-24")
 
-conta1 = Conta("00123456-1" , "1700")
-conta2 = Conta("00123456-2" , "1800")
-conta3 = Conta("12345.67-3" , "1900")
-conta4 = Conta("12345.67-4" , "2000")
-conta5 = Conta("00012345-5" , "2100")
+conta1 = Conta("00123456-1", 1700, cliente1)
+conta2 = Conta("00123456-2", 1800, cliente2)
+conta3 = Conta("12345.67-3", 1900, cliente3)
+conta4 = Conta("12345.67-4", 2000, cliente4)
+conta5 = Conta("00012345-5", 2100, cliente5)
 
-contaC1 = ContaCorrente("00123456-1" , "2100")
-contaC2 = ContaCorrente("00123456-2" , "2200")
-contaC3 = ContaCorrente("00123456-3" , "2300")
-contaC4 = ContaCorrente("00123456-4" , "2400")
-contaC5 = ContaCorrente("00123456-5" , "2500")
+contaC1 = ContaCorrente("00123456-1", 2100, cliente1)
+contaC2 = ContaCorrente("00123456-2", 2200, cliente2)
+contaC3 = ContaCorrente("00123456-3", 2300, cliente3)
+contaC4 = ContaCorrente("00123456-4", 2400, cliente4)
+contaC5 = ContaCorrente("00123456-5", 2500, cliente5)
 
-contaP1 = ContaPoupanca("000543210-1" , "3300")
-contaP2 = ContaPoupanca("000543210-2" , "3400")
-contaP3 = ContaPoupanca("000543210-3" , "3500")
-contaP4 = ContaPoupanca("000543210-4" , "3600")
-contaP5 = ContaPoupanca("000543210-5" , "3700")
+contaP1 = ContaPoupanca("000543210-1", 3300, cliente1)
+contaP2 = ContaPoupanca("000543210-2", 3400, cliente2)
+contaP3 = ContaPoupanca("000543210-3", 3500, cliente3)
+contaP4 = ContaPoupanca("000543210-4", 3600, cliente4)
+contaP5 = ContaPoupanca("000543210-5", 3700, cliente5)
 
 transacao_1 = Transacao(TipoTransacao.SAIDA, "Crédito", 150.50, "Supermercado Bom Preço", "João Silva")
 transacao_2 = Transacao(TipoTransacao.SAIDA, "Crédito", 89.90, "Livraria Leitura", "João Silva")
