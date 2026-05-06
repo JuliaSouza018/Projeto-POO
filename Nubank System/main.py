@@ -173,7 +173,7 @@ class Usuario:
         self.email = email
         self.telefone = telefone
 
-    def _str_(self):
+    def __str__(self):
         return f"Usuário({self.id}, {self.nome})"
 
 class Endereco:
@@ -184,10 +184,8 @@ class Endereco:
         self.cidade = cidade
         self.estado = estado
 
-    def _str_(self):
+    def __str__(self):
         return f"Endereço({self.rua}, {self.numero})"
-
-
 
 class Notificacao:
     def __init__(self, id, mensagem, tipo):
@@ -198,8 +196,6 @@ class Notificacao:
     def _str_(self):
         return f"Notificação({self.tipo})"
 
-
-
 class Atendimento:
     def __init__(self, id, usuario, descricao, status):
         self.id = id
@@ -207,29 +203,27 @@ class Atendimento:
         self.descricao = descricao
         self.status = status 
 
-    def _str_(self):
+    def __str__(self):
         return f"Atendimento({self.id}, {self.status})"        
-
 
 #Matheus 
 # Classe Funcionario
 class Funcionario:
-    def _init_(self, nome, cargo):
+    def __init__(self, nome, cargo):
         self.nome = nome
         self.cargo = cargo
 
-    def _str_(self):
+    def __str__(self):
         return f"Funcionario({self.nome}, {self.cargo})"
 
 # Classe AgenciaDigital
 class AgenciaDigital:
-    def _init_(self, codigo, cidade):
+    def __init__(self, codigo, cidade):
         self.codigo = codigo
         self.cidade = cidade
 
-    def _str_(self):
+    def __str__(self):
         return f"AgenciaDigital({self.codigo}, {self.cidade})"
-
 
 #kauá
 class LimiteCartao:
@@ -278,18 +272,18 @@ class HistoricoTransferencia:
 
 # Matheus
 # Funcionários
-f1 = Funcionario("Carlos Silva", "Gerente")
-f2 = Funcionario("Ana Souza", "Atendente")
-f3 = Funcionario("Bruno Lima", "Analista")
-f4 = Funcionario("Juliana Costa", "Supervisora")
-f5 = Funcionario("Pedro Alves", "Caixa")
+funcionario1 = Funcionario("Carlos Silva", "Gerente")
+funcionario2 = Funcionario("Ana Souza", "Atendente")
+funcionario3 = Funcionario("Bruno Lima", "Analista")
+funcionario4 = Funcionario("Juliana Costa", "Supervisora")
+funcionario5 = Funcionario("Pedro Alves", "Caixa")
 
 # Agências Digitais
-a1 = AgenciaDigital(101, "São Paulo")
-a2 = AgenciaDigital(102, "Rio de Janeiro")
-a3 = AgenciaDigital(103, "Belo Horizonte")
-a4 = AgenciaDigital(104, "Curitiba")
-a5 = AgenciaDigital(105, "Porto Alegre")
+agencia1 = AgenciaDigital(101, "São Paulo")
+agencia2 = AgenciaDigital(102, "Rio de Janeiro")
+agencia3 = AgenciaDigital(103, "Belo Horizonte")
+agencia4 = AgenciaDigital(104, "Curitiba")
+agencia5 = AgenciaDigital(105, "Porto Alegre")
 
 cliente1 = Cliente("cliente1" , "000.000.000-20")
 cliente2 = Cliente("cliente2" , "111.111.111-21")
@@ -303,37 +297,37 @@ conta3 = Conta("12345.67-3" , "1900")
 conta4 = Conta("12345.67-4" , "2000")
 conta5 = Conta("00012345-5" , "2100")
 
-contaC1 = ContaCorrente("00123456-1" , "2100")
-contaC2 = ContaCorrente("00123456-2" , "2200")
-contaC3 = ContaCorrente("00123456-3" , "2300")
-contaC4 = ContaCorrente("00123456-4" , "2400")
-contaC5 = ContaCorrente("00123456-5" , "2500")
+contaCorrente1 = ContaCorrente("00123456-1" , "2100")
+contaCorrente2 = ContaCorrente("00123456-2" , "2200")
+contaCorrente3 = ContaCorrente("00123456-3" , "2300")
+contaCorrente4 = ContaCorrente("00123456-4" , "2400")
+contaCorrente5 = ContaCorrente("00123456-5" , "2500")
 
-contaP1 = ContaPoupanca("000543210-1" , "3300")
-contaP2 = ContaPoupanca("000543210-2" , "3400")
-contaP3 = ContaPoupanca("000543210-3" , "3500")
-contaP4 = ContaPoupanca("000543210-4" , "3600")
-contaP5 = ContaPoupanca("000543210-5" , "3700")
+contaPoupanca1 = ContaPoupanca("000543210-1" , "3300")
+contaPoupanca2 = ContaPoupanca("000543210-2" , "3400")
+contaPoupanca3 = ContaPoupanca("000543210-3" , "3500")
+contaPoupanca4 = ContaPoupanca("000543210-4" , "3600")
+contaPoupanca5 = ContaPoupanca("000543210-5" , "3700")
 
 
 ##gabriel
-transacao_1 = Transacao(TipoTransacao.SAIDA, "Crédito", 150.50, "Supermercado Bom Preço", "João Silva")
-transacao_2 = Transacao(TipoTransacao.SAIDA, "Crédito", 89.90, "Livraria Leitura", "João Silva")
-transacao_3 = Transacao(TipoTransacao.SAIDA, "Crédito", 25.00, "Padaria Central", "João Silva")
-transacao_4 = Transacao(TipoTransacao.SAIDA, "Crédito", 200.00, "Posto Ipiranga", "João Silva")
-transacao_5 = Transacao(TipoTransacao.SAIDA, "Crédito", 59.99, "Farmácia Drogasil", "João Silva")
+transacao1 = Transacao(TipoTransacao.SAIDA, "Crédito", 150.50, "Supermercado Bom Preço", "João Silva")
+transacao2 = Transacao(TipoTransacao.SAIDA, "Crédito", 89.90, "Livraria Leitura", "João Silva")
+transacao3 = Transacao(TipoTransacao.SAIDA, "Crédito", 25.00, "Padaria Central", "João Silva")
+transacao4 = Transacao(TipoTransacao.SAIDA, "Crédito", 200.00, "Posto Ipiranga", "João Silva")
+transacao5 = Transacao(TipoTransacao.SAIDA, "Crédito", 59.99, "Farmácia Drogasil", "João Silva")
 
-boleto_1 = PagamentoBoleto(150.50, "34191.09008 61713.957308 71444.640008 1 90000000015050")
-boleto_2 = PagamentoBoleto(89.90, "03399.87362 54000.000000 00018.234567 8 80000000008990")
-boleto_3 = PagamentoBoleto(25.00, "23793.38128 60064.093409 83000.041011 5 70000000002500")
-boleto_4 = PagamentoBoleto(200.00, "10499.12345 67890.123456 78901.234567 2 60000000020000")
-boleto_5 = PagamentoBoleto(59.99, "00190.00009 01234.567890 12345.678901 3 50000000005999")
+boleto1 = PagamentoBoleto(150.50, "34191.09008 61713.957308 71444.640008 1 90000000015050")
+boleto2 = PagamentoBoleto(89.90, "03399.87362 54000.000000 00018.234567 8 80000000008990")
+boleto3 = PagamentoBoleto(25.00, "23793.38128 60064.093409 83000.041011 5 70000000002500")
+boleto4 = PagamentoBoleto(200.00, "10499.12345 67890.123456 78901.234567 2 60000000020000")
+boleto5 = PagamentoBoleto(59.99, "00190.00009 01234.567890 12345.678901 3 50000000005999")
 
-pix_1 = PagamentoPix(150.50, "joao.silva@email.com")
-pix_2 = PagamentoPix(89.90, "123.456.789-00")
-pix_3 = PagamentoPix(25.00, "+5511999999999")
-pix_4 = PagamentoPix(200.00, "d2b456-123f-45g7-89h0-1234567890ab") # Chave aleatória
-pix_5 = PagamentoPix(59.99, "maria.souza@email.com")
+pix1 = PagamentoPix(150.50, "joao.silva@email.com")
+pix2 = PagamentoPix(89.90, "123.456.789-00")
+pix3 = PagamentoPix(25.00, "+5511999999999")
+pix4 = PagamentoPix(200.00, "d2b456-123f-45g7-89h0-1234567890ab") # Chave aleatória
+pix5 = PagamentoPix(59.99, "maria.souza@email.com")
 
 
 fatura_jan = Fatura(mes=1, dia_fechamento=25, data_vencimento=datetime(2026, 2, 5))
@@ -342,47 +336,47 @@ fatura_mar = Fatura(mes=3, dia_fechamento=25, data_vencimento=datetime(2026, 4, 
 fatura_abr = Fatura(mes=4, dia_fechamento=25, data_vencimento=datetime(2026, 5, 5))
 fatura_mai = Fatura(mes=5, dia_fechamento=25, data_vencimento=datetime(2026, 6, 5))
 
-cartao_1 = CartaoCredito("1111222233334444", "João Silva", "123", "12/29", 1500.00, "Mastercard", True)
-cartao_2 = CartaoCredito("5555666677778888", "Maria Souza", "456", "10/30", 3000.00, "Visa", True)
-cartao_3 = CartaoCredito("9999000011112222", "Carlos Lima", "789", "05/27", 800.00, "Elo", False)
-cartao_4 = CartaoCredito("3333444455556666", "Ana Costa", "321", "08/28", 5000.00, "Mastercard", True)
-cartao_5 = CartaoCredito("7777888899990000", "Pedro Alves", "654", "01/31", 10000.00, "Visa", False)
+cartao1 = CartaoCredito("1111222233334444", "João Silva", "123", "12/29", 1500.00, "Mastercard", True)
+cartao2 = CartaoCredito("5555666677778888", "Maria Souza", "456", "10/30", 3000.00, "Visa", True)
+cartao3 = CartaoCredito("9999000011112222", "Carlos Lima", "789", "05/27", 800.00, "Elo", False)
+cartao4 = CartaoCredito("3333444455556666", "Ana Costa", "321", "08/28", 5000.00, "Mastercard", True)
+cartao5 = CartaoCredito("7777888899990000", "Pedro Alves", "654", "01/31", 10000.00, "Visa", False)
 
 #vinicius
 
-u1 = Usuario(1, "João Silva", "joao@email.com", "11999999999")
-u2 = Usuario(2, "Maria Souza", "maria@email.com", "11988888888")
-u3 = Usuario(3, "Carlos Lima", "carlos@email.com", "11977777777")
-u4 = Usuario(4, "Ana Costa", "ana@email.com", "11966666666")
-u5 = Usuario(5, "Pedro Alves", "pedro@email.com", "11955555555")
+user1 = Usuario(1, "João Silva", "joao@email.com", "11999999999")
+user2 = Usuario(2, "Maria Souza", "maria@email.com", "11988888888")
+user3 = Usuario(3, "Carlos Lima", "carlos@email.com", "11977777777")
+user4 = Usuario(4, "Ana Costa", "ana@email.com", "11966666666")
+user5 = Usuario(5, "Pedro Alves", "pedro@email.com", "11955555555")
 
-e1 = Endereco(1, "Rua A", 100, "São Paulo", "SP")
-e2 = Endereco(2, "Rua B", 200, "Rio de Janeiro", "RJ")
-e3 = Endereco(3, "Rua C", 300, "Belo Horizonte", "MG")
-e4 = Endereco(4, "Rua D", 400, "Curitiba", "PR")
-e5 = Endereco(5, "Rua E", 500, "Porto Alegre", "RS")
+endereco1 = Endereco(1, "Rua A", 100, "São Paulo", "SP")
+endereco2 = Endereco(2, "Rua B", 200, "Rio de Janeiro", "RJ")
+endereco3 = Endereco(3, "Rua C", 300, "Belo Horizonte", "MG")
+endereco4 = Endereco(4, "Rua D", 400, "Curitiba", "PR")
+endereco5 = Endereco(5, "Rua E", 500, "Porto Alegre", "RS")
 
-n1 = Notificacao(1, "Seu pedido foi enviado", "email")
-n2 = Notificacao(2, "Nova mensagem recebida", "push")
-n3 = Notificacao(3, "Pagamento aprovado", "sms")
-n4 = Notificacao(4, "Atualização disponível", "push")
-n5 = Notificacao(5, "Senha alterada com sucesso", "email")
+notificacao1 = Notificacao(1, "Seu pedido foi enviado", "email")
+notificacao2 = Notificacao(2, "Nova mensagem recebida", "push")
+notificacao3 = Notificacao(3, "Pagamento aprovado", "sms")
+notificacao4 = Notificacao(4, "Atualização disponível", "push")
+notificacao5 = Notificacao(5, "Senha alterada com sucesso", "email")
 
-a1 = Atendimento(1, u1, "Problema no login", "aberto")
-a2 = Atendimento(2, u2, "Erro no pagamento", "fechado")
-a3 = Atendimento(3, u3, "Dúvida sobre produto", "aberto")
-a4 = Atendimento(4, u4, "Solicitação de reembolso", "fechado")
-a5 = Atendimento(5, u5, "Alteração de dados", "aberto")
+atendimento1 = Atendimento(1, u1, "Problema no login", "aberto")
+atendimento2 = Atendimento(2, u2, "Erro no pagamento", "fechado")
+atendimento3 = Atendimento(3, u3, "Dúvida sobre produto", "aberto")
+atendimento4 = Atendimento(4, u4, "Solicitação de reembolso", "fechado")
+atendimento5 = Atendimento(5, u5, "Alteração de dados", "aberto")
 
 #kauá
-cartao1 = LimiteCartao(1, "João Silva", 5000.0, 1200.0)
-cartao2 = LimiteCartao(2, "Maria Oliveira", 2500.0, 2450.0)
-cartao3 = LimiteCartao(3, "Carlos Souza", 10000.0, 0.0)
-cartao4 = LimiteCartao(4, "Ana Costa", 1500.0, 800.0)
-cartao5 = LimiteCartao(5, "Bruno Alves", 3000.0, 3100.0)
+limiteCartao1 = LimiteCartao(1, "João Silva", 5000.0, 1200.0)
+limiteCartao2 = LimiteCartao(2, "Maria Oliveira", 2500.0, 2450.0)
+limiteCartao3 = LimiteCartao(3, "Carlos Souza", 10000.0, 0.0)
+limiteCartao4 = LimiteCartao(4, "Ana Costa", 1500.0, 800.0)
+limiteCartao5 = LimiteCartao(5, "Bruno Alves", 3000.0, 3100.0)
 
-transf1 = HistoricoTransferencia(1, "20/03/2026", 150.0, "Mercado Central", "Pix")
-transf2 = HistoricoTransferencia(2, "21/03/2026", 45.90, "Netflix", "Crédito")
-transf3 = HistoricoTransferencia(3, "22/03/2026", 1200.0, "Aluguel", "TED")
-transf4 = HistoricoTransferencia(4, "23/03/2026", 15.00, "Padaria Pão de Mel", "Débito")
-transf5 = HistoricoTransferencia(5, "24/03/2026", 350.0, "Posto Combustível", "Crédito")
+histTransf1 = HistoricoTransferencia(1, "20/03/2026", 150.0, "Mercado Central", "Pix")
+histTransf2 = HistoricoTransferencia(2, "21/03/2026", 45.90, "Netflix", "Crédito")
+histTransf3 = HistoricoTransferencia(3, "22/03/2026", 1200.0, "Aluguel", "TED")
+histTransf4 = HistoricoTransferencia(4, "23/03/2026", 15.00, "Padaria Pão de Mel", "Débito")
+histTransf5 = HistoricoTransferencia(5, "24/03/2026", 350.0, "Posto Combustível", "Crédito")
