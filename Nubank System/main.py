@@ -1,82 +1,36 @@
-#imports extremamente NECESSÁRIOS para criar enumeradores e usar o método datetime
+#imports NECESSÁRIOS para criar enumeradores e usar o método datetime
 from datetime import datetime
 from enum import Enum
 
 class Cliente:
-    def __init__(self, nome, cpf):
-        self.nome = nome #abstração
-        self._cpf = cpf  #encapsulamento
-
-    def mostrar_cpf(self):
-        return self._cpf
-
+    def __init__(self,nome,cpf):
+        self.nome = nome
+        self.cpf = cpf
     def __str__(self):
-        return f"Cliente({self.nome}, {self._cpf})"
+        return f"Cliente({self.nome}, {self.cpf})"   
 
 
 class Conta:
-    def __init__(self, numero, saldo, cliente):
-        self.numero = numero #abstração
-        self._saldo = saldo #encapsulamento
-        self.cliente = cliente
+    def __init__(self,numero,saldo):
+        self.numero = numero 
+        self.saldo = saldo
+    def __str__(self):
+        return f"Conta({self.numero}, {self.saldo})" 
 
-    def depositar(self, valor):
-        if valor > 0:
-            self._saldo += valor
-            print(f"Depósito de R${valor:.2f} Realizado com sucesso!")
-        else:
-            print("Saldo Insuficiente.")
+class ContaCorrente:
+    def __init__(self,numero,saldo):
+        self.numero = numero 
+        self.saldo = saldo
+    def __str__(self):
+        return f"ContaCorrente({self.numero}, {self.saldo})"  
 
-    def sacar(self, valor):
-        if valor > 0 and valor <= self._saldo:
-            self._saldo -= valor
-            print(f"Saque de R${valor:.2f} Realizado com sucesso!.")
-        else:
-            print("Saldo insuficiente ou valor inválido.")
-
-    def mostrar_saldo(self):
-        return self._saldo
+class ContaPoupanca:
+    def __init__(self, numero, saldo):
+        self.numero = numero 
+        self.saldo = saldo    
 
     def __str__(self):
-        return f"Conta({self.numero}, Saldo: R${self._saldo:.2f}, Cliente: {self.cliente.nome})"
-
-
-class ContaCorrente(Conta): #herança
-    def __init__(self, numero, saldo, cliente, taxa_saque=3.2):
-        super().__init__(numero, saldo, cliente)
-        self.taxa_saque = taxa_saque
-
-    def sacar(self, valor): #polimorfismo
-        total = valor + self.taxa_saque
-        if valor > 0 and total <= self._saldo:
-            self._saldo -= total
-            print(f"Saque de R${valor:.2f} realizado com taxa de R${self.taxa_saque:.2f}.")
-        else:
-            print("Saldo insuficiente ou valor inválido.")
-
-    def __str__(self):
-        return f"ContaCorrente({self.numero}, Saldo: R${self._saldo:.2f}, Cliente: {self.cliente.nome})"
-
-
-class ContaPoupanca(Conta): #herança
-    def __init__(self, numero, saldo, cliente, rendimento=0.05):
-        super().__init__(numero, saldo, cliente)
-        self.rendimento = rendimento
-
-    def sacar(self, valor): #polimorfismo
-        if valor > 0 and valor <= self._saldo:
-            self._saldo -= valor
-            print(f"Saque de R${valor:.2f} realizado com sucesso na conta poupança.")
-        else:
-            print("Saldo insuficiente ou valor inválido.")
-
-    def aplicar_rendimento(self):
-        self._saldo += self._saldo * self.rendimento
-        print(f"Rendimento aplicado. Novo saldo: R${self._saldo:.2f}")
-
-    def __str__(self):
-        return f"ContaPoupanca({self.numero}, Saldo: R${self._saldo:.2f}, Cliente: {self.cliente.nome})"
-
+        return f"ContaPoupanca({self.numero}, {self.saldo})"   
 
 
 #gabriel
@@ -210,29 +164,7 @@ class CartaoCredito:
         self.fatura_atual.adicionar_compra(transacao)
         print(f"Compra de R${transacao.valor:.2f} aprovada no cartão {self.mostrar_cartao_seguro()}.")
 
-
-#vinicius
-class Transferencia():
-    def __init__(self, descricao, valor):
-        self.descricao = descricao
-        self.valor = valor
-
-
-class Pix():
-    def __init__(self, chave, valor):
-        self.chave = chave
-        self.valor = valor
-
-class Emprestimo():
-    def __init__(self, tipo, valor):
-        self.tipo = tipo
-        self.valor = valor
-
-class Investimento():
-    def __init__ (self, tipo, valor):
-        self.tipo = tipo
-        self.valor = valor
-
+#vinicius 
 
 class Usuario:
     def __init__(self, id, nome, email, telefone):
@@ -280,15 +212,58 @@ class Atendimento:
 
 
 #Matheus 
+# Classe Funcionario
+class Funcionario:
+    def _init_(self, nome, cargo):
+        self.nome = nome
+        self.cargo = cargo
+
+    def _str_(self):
+        return f"Funcionario({self.nome}, {self.cargo})"
+
+# Classe AgenciaDigital
+class AgenciaDigital:
+    def _init_(self, codigo, cidade):
+        self.codigo = codigo
+        self.cidade = cidade
+
+    def _str_(self):
+        return f"AgenciaDigital({self.codigo}, {self.cidade})"
 
 
+#kauá
 class LimiteCartao:
     def __init__(self, id, nome_cliente, limite_total, gasto_atual):
         self.id = id
         self.cliente = nome_cliente
-        self.total = limite_total
-        self.gasto = gasto_atual
-        self.disponivel = limite_total - gasto_atual
+        self._total = limite_total        # encapsulado
+        self._gasto = gasto_atual         # encapsulado
+
+    # método para calcular disponível (abstração)
+    def calcular_disponivel(self):
+        return self._total - self._gasto
+
+    # método para gastar valor
+    def gastar(self, valor):
+        if valor > 0 and valor <= self.calcular_disponivel():
+            self._gasto += valor
+            print(f"Gasto de R${valor:.2f} realizado.")
+        else:
+            print("Limite insuficiente ou valor inválido.")
+
+    # método para pagamento (reduz gasto)
+    def pagar_fatura(self, valor):
+        if valor > 0:
+            self._gasto -= valor
+            if self._gasto < 0:
+                self._gasto = 0
+            print(f"Pagamento de R${valor:.2f} realizado.")
+        else:
+            print("Valor inválido.")
+
+    def __str__(self):
+        return f"LimiteCartao({self.cliente}, Disponível: R${self.calcular_disponivel():.2f})"
+
 
 class HistoricoTransferencia:
     def __init__(self, id, data, valor, recebedor, tipo):
@@ -298,6 +273,23 @@ class HistoricoTransferencia:
         self.recebedor = recebedor
         self.tipo = tipo
 
+    def __str__(self):
+        return f"{self.data} - R${self.valor:.2f} para {self.recebedor} ({self.tipo})"
+
+# Matheus
+# Funcionários
+f1 = Funcionario("Carlos Silva", "Gerente")
+f2 = Funcionario("Ana Souza", "Atendente")
+f3 = Funcionario("Bruno Lima", "Analista")
+f4 = Funcionario("Juliana Costa", "Supervisora")
+f5 = Funcionario("Pedro Alves", "Caixa")
+
+# Agências Digitais
+a1 = AgenciaDigital(101, "São Paulo")
+a2 = AgenciaDigital(102, "Rio de Janeiro")
+a3 = AgenciaDigital(103, "Belo Horizonte")
+a4 = AgenciaDigital(104, "Curitiba")
+a5 = AgenciaDigital(105, "Porto Alegre")
 
 cliente1 = Cliente("cliente1" , "000.000.000-20")
 cliente2 = Cliente("cliente2" , "111.111.111-21")
@@ -305,24 +297,26 @@ cliente3 = Cliente("cliente3" , "222.222.222-22")
 cliente4 = Cliente("cliente4" , "333.333.333-23")
 cliente5 = Cliente("cliente5" , "444.444.444-24")
 
-conta1 = Conta("00123456-1", 1700, cliente1)
-conta2 = Conta("00123456-2", 1800, cliente2)
-conta3 = Conta("12345.67-3", 1900, cliente3)
-conta4 = Conta("12345.67-4", 2000, cliente4)
-conta5 = Conta("00012345-5", 2100, cliente5)
+conta1 = Conta("00123456-1" , "1700")
+conta2 = Conta("00123456-2" , "1800")
+conta3 = Conta("12345.67-3" , "1900")
+conta4 = Conta("12345.67-4" , "2000")
+conta5 = Conta("00012345-5" , "2100")
 
-contaC1 = ContaCorrente("00123456-1", 2100, cliente1)
-contaC2 = ContaCorrente("00123456-2", 2200, cliente2)
-contaC3 = ContaCorrente("00123456-3", 2300, cliente3)
-contaC4 = ContaCorrente("00123456-4", 2400, cliente4)
-contaC5 = ContaCorrente("00123456-5", 2500, cliente5)
+contaC1 = ContaCorrente("00123456-1" , "2100")
+contaC2 = ContaCorrente("00123456-2" , "2200")
+contaC3 = ContaCorrente("00123456-3" , "2300")
+contaC4 = ContaCorrente("00123456-4" , "2400")
+contaC5 = ContaCorrente("00123456-5" , "2500")
 
-contaP1 = ContaPoupanca("000543210-1", 3300, cliente1)
-contaP2 = ContaPoupanca("000543210-2", 3400, cliente2)
-contaP3 = ContaPoupanca("000543210-3", 3500, cliente3)
-contaP4 = ContaPoupanca("000543210-4", 3600, cliente4)
-contaP5 = ContaPoupanca("000543210-5", 3700, cliente5)
+contaP1 = ContaPoupanca("000543210-1" , "3300")
+contaP2 = ContaPoupanca("000543210-2" , "3400")
+contaP3 = ContaPoupanca("000543210-3" , "3500")
+contaP4 = ContaPoupanca("000543210-4" , "3600")
+contaP5 = ContaPoupanca("000543210-5" , "3700")
 
+
+##gabriel
 transacao_1 = Transacao(TipoTransacao.SAIDA, "Crédito", 150.50, "Supermercado Bom Preço", "João Silva")
 transacao_2 = Transacao(TipoTransacao.SAIDA, "Crédito", 89.90, "Livraria Leitura", "João Silva")
 transacao_3 = Transacao(TipoTransacao.SAIDA, "Crédito", 25.00, "Padaria Central", "João Silva")
@@ -355,29 +349,6 @@ cartao_4 = CartaoCredito("3333444455556666", "Ana Costa", "321", "08/28", 5000.0
 cartao_5 = CartaoCredito("7777888899990000", "Pedro Alves", "654", "01/31", 10000.00, "Visa", False)
 
 #vinicius
-transf = Transferencia("Transferencia automatica", 100)
-transf1 = Transferencia("Transferencia automatica", 500)
-transf2 = Transferencia("Transferencia automatica", 200)
-transf3 = Transferencia("Transferencia automatica", 350)
-transf4 = Transferencia("Transferencia automatica", 1.000)
-
-pic = Pix("11981353251", 1.000)
-pic1 = Pix("21981353251", 2.000)
-pic2 = Pix("31981353251", 2.500)
-pic3 = Pix("88779956896", 3.700)
-pic4 = Pix("55662256896", 500)
-
-emp = Emprestimo("Consignado", 10.000)
-emp1 = Emprestimo("Com garantia", 20.000)
-emp2 = Emprestimo("Com FGTS", 15.000)
-emp3 = Emprestimo("Cheque Especial", 11.000)
-emp4 = Emprestimo("Pessoal", 13.500)
-
-inv = Investimento("LCI/LCA", 100.000)
-inv1 = Investimento("CDB", 150.000)
-inv2 = Investimento("IPCA+", 120.000)
-inv3 = Investimento("Acoes", 130.000)
-inv4 = Investimento("FIIs", 500.000)
 
 u1 = Usuario(1, "João Silva", "joao@email.com", "11999999999")
 u2 = Usuario(2, "Maria Souza", "maria@email.com", "11988888888")
@@ -403,8 +374,7 @@ a3 = Atendimento(3, u3, "Dúvida sobre produto", "aberto")
 a4 = Atendimento(4, u4, "Solicitação de reembolso", "fechado")
 a5 = Atendimento(5, u5, "Alteração de dados", "aberto")
 
-#Matheus 
-
+#kauá
 cartao1 = LimiteCartao(1, "João Silva", 5000.0, 1200.0)
 cartao2 = LimiteCartao(2, "Maria Oliveira", 2500.0, 2450.0)
 cartao3 = LimiteCartao(3, "Carlos Souza", 10000.0, 0.0)
