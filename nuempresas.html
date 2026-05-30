@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NuEmpresas — Inteligência Financeira</title>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;600;700;800;900&family=Instrument+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p:        #7C3AED;
+  --p-2:      #9D64F5;
+  --p-3:      #5B21B6;
+  --p-glow:   rgba(124,58,237,.22);
+  --bg:       #07070F;
+  --s1:       #0D0D1C;
+  --s2:       #121225;
+  --s3:       #1A1A32;
+  --b:        rgba(255,255,255,.07);
+  --b2:       rgba(255,255,255,.13);
+  --t:        #F2F2FF;
+  --t2:       #8888AA;
+  --t3:       #52526A;
+  --g:        #34D399;
+  --r:        #F87171;
+  --y:        #FBBF24;
+  --rad:      16px;
+  --ease:     .22s cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Instrument Sans',sans-serif;background:var(--bg);color:var(--t);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--s3);border-radius:4px}
+input,select,button,textarea{font-family:inherit}
+a{text-decoration:none}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.screen.active{animation:fadeUp .36s cubic-bezier(.4,0,.2,1)}
+
+/* ── AUTH ──────────────────────────────────────── */
+#login,#cadastro{flex-direction:column;align-items:center;justify-content:center;background:var(--bg);position:relative;overflow:hidden}
+.bg-radial{position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 55% at 75% 10%, rgba(124,58,237,.2) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 10% 80%, rgba(93,45,183,.13) 0%, transparent 55%),
+    radial-gradient(ellipse 30% 30% at 50% 50%, rgba(124,58,237,.05) 0%, transparent 60%)}
+.bg-grid{position:absolute;inset:0;pointer-events:none;opacity:.03;
+  background-image:linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);
+  background-size:40px 40px}
+.auth-card{position:relative;z-index:2;width:min(460px,90vw);background:var(--s1);border:1px solid var(--b);border-radius:24px;padding:52px 44px;display:flex;flex-direction:column;gap:0}
+.brand{font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:1.9rem;letter-spacing:-.05em;color:var(--t);margin-bottom:8px}
+.brand em{color:var(--p-2);font-style:normal}
+.brand-tag{font-size:.75rem;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-bottom:36px}
+.auth-title{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:1.45rem;letter-spacing:-.02em;margin-bottom:6px}
+.auth-sub{font-size:.875rem;color:var(--t2);margin-bottom:28px;line-height:1.6}
+
+/* FORM */
+.fgroup{display:flex;flex-direction:column;gap:0;margin-bottom:14px}
+.fgroup label{font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);margin-bottom:7px}
+.fgroup input,.fgroup select,.fgroup textarea{background:var(--s2);border:1px solid var(--b);border-radius:11px;padding:13px 15px;color:var(--t);font-size:.925rem;outline:none;transition:border-color var(--ease),background var(--ease)}
+.fgroup input::placeholder{color:var(--t3)}
+.fgroup input:focus,.fgroup select:focus{border-color:var(--p);background:var(--s3)}
+.fgroup select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235A5A7A' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-main{width:100%;background:var(--p);color:#fff;border:none;border-radius:12px;padding:15px;font-family:'Cabinet Grotesk',sans-serif;font-size:1rem;font-weight:700;letter-spacing:-.01em;cursor:pointer;transition:all var(--ease);margin-top:6px}
+.btn-main:hover{background:var(--p-2);transform:translateY(-1px);box-shadow:0 14px 36px var(--p-glow)}
+.btn-main:active{transform:translateY(0)}
+.auth-links{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-top:16px}
+.auth-link{font-size:.83rem;color:var(--t2)}
+.auth-link a{color:var(--p-2);cursor:pointer;font-weight:500}
+.auth-link a:hover{text-decoration:underline}
+.btn-ghost{background:transparent;border:1px solid var(--b);border-radius:9px;padding:8px 15px;color:var(--t2);cursor:pointer;font-size:.82rem;transition:all var(--ease);display:inline-flex;align-items:center;gap:6px;margin-bottom:24px}
+.btn-ghost:hover{border-color:var(--b2);color:var(--t)}
+.divider{display:flex;align-items:center;gap:12px;color:var(--t3);font-size:.78rem;margin:16px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--b)}
+
+/* ── APP SHELL ─────────────────────────────────── */
+#app{flex-direction:row}
+.sidebar{width:248px;background:var(--s1);border-right:1px solid var(--b);display:flex;flex-direction:column;padding:28px 14px;position:sticky;top:0;height:100vh;flex-shrink:0;overflow-y:auto}
+.sb-brand{font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:1.35rem;letter-spacing:-.05em;color:var(--t);padding:0 12px;margin-bottom:4px}
+.sb-brand em{color:var(--p-2);font-style:normal}
+.sb-sub{font-size:.62rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;padding:0 12px;margin-bottom:32px;font-weight:600}
+.sb-section-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);padding:0 14px;margin:18px 0 6px}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;cursor:pointer;color:var(--t2);font-size:.85rem;font-weight:500;border:none;background:transparent;width:100%;text-align:left;transition:all var(--ease);position:relative}
+.nav-btn:hover{background:var(--s2);color:var(--t)}
+.nav-btn.active{background:rgba(124,58,237,.14);color:var(--p-2)}
+.nav-btn.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:16px;background:var(--p-2);border-radius:0 3px 3px 0}
+.nav-btn svg{flex-shrink:0;width:16px;height:16px;opacity:.65}
+.nav-btn.active svg{opacity:1}
+.sb-spacer{flex:1}
+.nav-logout{color:var(--r)!important}
+.nav-logout:hover{background:rgba(248,113,113,.08)!important;color:var(--r)!important}
+
+.main{flex:1;overflow-y:auto;background:var(--bg);display:flex;flex-direction:column;position:relative}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 36px;height:62px;background:var(--s1);border-bottom:1px solid var(--b);position:sticky;top:0;z-index:30}
+.greeting-text{font-size:.85rem;color:var(--t2)}
+.greeting-text strong{color:var(--t);font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.icon-btn{background:transparent;border:1px solid var(--b);border-radius:9px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);transition:all var(--ease);position:relative}
+.icon-btn:hover{border-color:var(--b2);color:var(--t)}
+.notif-dot{position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--p-2);border:1.5px solid var(--s1)}
+.avatar-company{height:34px;background:linear-gradient(135deg,var(--p-3),var(--p-2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:.72rem;cursor:pointer;color:#fff;letter-spacing:.04em;padding:0 10px;gap:6px}
+
+.content{padding:32px 36px;flex:1;display:flex;flex-direction:column;gap:26px}
+
+/* TABS */
+.tab{display:none;flex-direction:column;gap:26px}
+.tab.active{display:flex;animation:fadeUp .3s cubic-bezier(.4,0,.2,1)}
+
+/* PAGE HEADER */
+.page-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.page-hd-left h1{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.5rem;letter-spacing:-.035em;margin-bottom:4px}
+.page-hd-left p{font-size:.83rem;color:var(--t2)}
+
+/* GENERIC CARD */
+.card{background:var(--s1);border:1px solid var(--b);border-radius:var(--rad);padding:24px}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.sec-hd h2{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:1rem;letter-spacing:-.02em}
+.sec-link{font-size:.78rem;color:var(--p-2);cursor:pointer;background:none;border:none;padding:0}
+.sec-link:hover{text-decoration:underline}
+
+/* GRIDS */
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:13px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+
+/* STAT CARDS */
+.stat-card{background:var(--s1);border:1px solid var(--b);border-radius:var(--rad);padding:20px}
+.stat-card .s-icon{font-size:1.3rem;margin-bottom:10px}
+.stat-card .s-label{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.stat-card .s-val{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.55rem;letter-spacing:-.04em;margin-bottom:5px}
+.stat-card .s-trend{font-size:.76rem;display:inline-flex;align-items:center;gap:4px}
+.trend-up{color:var(--g)}
+.trend-down{color:var(--r)}
+.trend-neutral{color:var(--t2)}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:.68rem;font-weight:700;letter-spacing:.03em}
+.b-green{background:rgba(52,211,153,.12);color:var(--g)}
+.b-red{background:rgba(248,113,113,.12);color:var(--r)}
+.b-yellow{background:rgba(251,191,36,.12);color:var(--y)}
+.b-purple{background:rgba(124,58,237,.15);color:var(--p-2)}
+.b-blue{background:rgba(96,165,250,.12);color:#60A5FA}
+
+/* BUTTONS */
+.btn-outline{background:transparent;border:1px solid var(--b2);color:var(--t);border-radius:10px;padding:10px 20px;font-size:.85rem;font-weight:500;cursor:pointer;transition:all var(--ease)}
+.btn-outline:hover{background:var(--s2);border-color:var(--p)}
+.btn-sm{padding:8px 16px;font-size:.8rem}
+.btn-main-sm{background:var(--p);color:#fff;border:none;border-radius:10px;padding:10px 20px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:'Cabinet Grotesk',sans-serif;transition:all var(--ease)}
+.btn-main-sm:hover{background:var(--p-2);box-shadow:0 8px 24px var(--p-glow)}
+.btn-danger-sm{background:rgba(248,113,113,.1);color:var(--r);border:1px solid rgba(248,113,113,.2);border-radius:10px;padding:8px 16px;font-size:.82rem;font-weight:600;cursor:pointer;transition:all var(--ease)}
+.btn-danger-sm:hover{background:rgba(248,113,113,.2)}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{border-bottom:1px solid var(--b)}
+th{text-align:left;padding:9px 13px;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3)}
+td{padding:13px 13px;font-size:.855rem;border-bottom:1px solid rgba(255,255,255,.04)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+
+/* PROGRESS */
+.prog-bar{background:var(--s3);border-radius:6px;height:6px;overflow:hidden;margin-top:8px}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--p-3),var(--p-2));border-radius:6px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.prog-fill-g{background:linear-gradient(90deg,#059669,var(--g))}
+.prog-fill-y{background:linear-gradient(90deg,#D97706,var(--y))}
+.prog-fill-r{background:linear-gradient(90deg,#DC2626,var(--r))}
+
+/* INFO BLOCKS */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.info-block{background:var(--s2);border-radius:12px;padding:13px 15px}
+.info-lbl{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
+.info-val{font-size:.88rem;font-weight:500;word-break:break-all}
+
+/* TOAST */
+.toast{position:fixed;bottom:26px;right:26px;z-index:9999;background:var(--s2);border:1px solid var(--b2);border-radius:14px;padding:13px 18px;font-size:.855rem;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all .32s cubic-bezier(.34,1.56,.64,1);max-width:340px;box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ── DASHBOARD HERO ──────────────────────────────────── */
+.dash-hero{
+  background:linear-gradient(135deg,#150535 0%,#2D1265 45%,#4C1D95 100%);
+  border-radius:20px;padding:28px 32px;position:relative;overflow:hidden;
+  border:1px solid rgba(124,58,237,.32);
+  display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:20px
+}
+.dash-hero::before{content:'';position:absolute;right:-80px;top:-80px;width:300px;height:300px;border-radius:50%;background:rgba(124,58,237,.14);pointer-events:none}
+.dash-hero::after{content:'';position:absolute;left:-50px;bottom:-100px;width:240px;height:240px;border-radius:50%;background:rgba(93,45,183,.1);pointer-events:none}
+.hero-left{position:relative;z-index:1}
+.hero-tag{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px}
+.hero-company{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.8rem;letter-spacing:-.04em;color:#fff;margin-bottom:4px}
+.hero-cnpj{font-size:.78rem;color:rgba(255,255,255,.4);margin-bottom:24px}
+.hero-actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn-glass{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff;border-radius:10px;padding:9px 18px;font-size:.82rem;font-weight:500;cursor:pointer;transition:all var(--ease)}
+.btn-glass:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.hero-score{position:relative;z-index:1;text-align:center}
+.score-ring{width:100px;height:100px;position:relative;margin:0 auto 8px}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score-ring circle{fill:none;stroke-width:8;stroke-linecap:round}
+.score-track{stroke:rgba(255,255,255,.1)}
+.score-fill{stroke:url(#score-grad);transition:stroke-dasharray 1.2s cubic-bezier(.4,0,.2,1)}
+.score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-num span{font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:1.5rem;color:#fff;line-height:1}
+.score-num small{font-size:.6rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em}
+.score-label{font-size:.78rem;color:rgba(255,255,255,.7);font-weight:500}
+.score-badge{font-size:.68rem;color:var(--g);background:rgba(52,211,153,.15);border-radius:20px;padding:2px 8px;margin-top:4px;display:inline-block}
+
+/* ── AI INSIGHT BOX ────────────────────────── */
+.ai-box{background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(93,45,183,.06));border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start}
+.ai-icon{width:32px;height:32px;border-radius:10px;background:rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.ai-content{flex:1}
+.ai-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--p-2);margin-bottom:4px}
+.ai-text{font-size:.845rem;color:var(--t);line-height:1.55}
+.ai-insights-list{display:flex;flex-direction:column;gap:10px}
+
+/* SEMÁFORO */
+.semaforo{display:flex;flex-direction:column;gap:10px}
+.sema-item{display:flex;align-items:center;gap:12px}
+.sema-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.sema-g{background:var(--g);box-shadow:0 0 8px var(--g)}
+.sema-y{background:var(--y);box-shadow:0 0 8px var(--y)}
+.sema-r{background:var(--r);box-shadow:0 0 8px var(--r)}
+.sema-label{flex:1;font-size:.875rem;font-weight:500}
+.sema-val{font-size:.78rem;color:var(--t2)}
+
+/* CHARTS (SVG-based) */
+.chart-wrap{width:100%;overflow:hidden}
+.chart-bars{display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:10px}
+.bar-group{flex:1;display:flex;gap:3px;align-items:flex-end}
+.bar{flex:1;border-radius:4px 4px 0 0;transition:height .8s cubic-bezier(.4,0,.2,1)}
+.bar-rev{background:linear-gradient(0deg,var(--p-3),var(--p-2))}
+.bar-exp{background:linear-gradient(0deg,rgba(248,113,113,.3),rgba(248,113,113,.6))}
+.chart-labels{display:flex;gap:6px;margin-top:8px}
+.chart-lbl{flex:1;text-align:center;font-size:.65rem;color:var(--t3)}
+.chart-legend{display:flex;gap:16px;margin-bottom:12px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:.76rem;color:var(--t2)}
+.legend-dot{width:8px;height:8px;border-radius:2px}
+
+/* PIZZA CHART */
+.pizza-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.pizza-legend{display:flex;flex-direction:column;gap:8px;flex:1}
+.pizza-item{display:flex;align-items:center;gap:8px;font-size:.82rem}
+.pizza-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* UPLOAD */
+.upload-zone{border:2px dashed var(--b2);border-radius:16px;padding:48px 24px;text-align:center;cursor:pointer;transition:all var(--ease);background:var(--s2)}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--p);background:rgba(124,58,237,.05)}
+.upload-icon{font-size:2.5rem;margin-bottom:12px}
+.upload-title{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:6px}
+.upload-sub{font-size:.84rem;color:var(--t2);margin-bottom:18px}
+.upload-tag{font-size:.73rem;color:var(--t3);margin-top:10px}
+.file-item{background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.file-ico{width:38px;height:38px;border-radius:10px;background:rgba(124,58,237,.15);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.file-body{flex:1}
+.file-name{font-weight:600;font-size:.875rem;margin-bottom:3px}
+.file-meta{font-size:.76rem;color:var(--t2)}
+
+/* CONTAS A PAGAR */
+.conta-priority{background:linear-gradient(135deg,rgba(248,113,113,.08),rgba(248,113,113,.02));border:1px solid rgba(248,113,113,.18);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.priority-tag{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--r);margin-bottom:4px}
+.priority-title{font-size:.9rem;font-weight:600}
+
+/* RANKING */
+.rank-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--b)}
+.rank-item:last-child{border-bottom:none}
+.rank-num{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1rem;color:var(--t3);width:20px;text-align:center;flex-shrink:0}
+.rank-body{flex:1}
+.rank-name{font-size:.875rem;font-weight:500;margin-bottom:3px}
+.rank-bar-wrap{height:4px;background:var(--s3);border-radius:3px;overflow:hidden}
+.rank-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--p-3),var(--p-2))}
+.rank-val{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:.875rem;white-space:nowrap}
+
+/* RELATÓRIOS */
+.report-btn{background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:14px 18px;cursor:pointer;text-align:left;transition:all var(--ease)}
+.report-btn:hover{border-color:var(--p);background:rgba(124,58,237,.06)}
+.report-btn.active{border-color:var(--p-2);background:rgba(124,58,237,.12)}
+.report-period{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:4px}
+.report-name{font-size:.9rem;font-weight:600}
+
+/* INDICADORES */
+.kpi-card{background:var(--s2);border-radius:12px;padding:16px}
+.kpi-label{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:6px}
+.kpi-val{font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.35rem;letter-spacing:-.03em;margin-bottom:4px}
+.kpi-trend{font-size:.75rem}
+
+/* CHAT IA */
+.ia-chat-panel{position:fixed;right:0;top:0;height:100vh;width:360px;background:var(--s1);border-left:1px solid var(--b);display:flex;flex-direction:column;z-index:100;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.ia-chat-panel.open{transform:translateX(0)}
+.ia-chat-header{padding:18px 20px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between}
+.ia-chat-title{font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:1rem;display:flex;align-items:center;gap:8px}
+.ia-dot{width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g)}
+.ia-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.ia-msg{max-width:90%;padding:10px 14px;border-radius:14px;font-size:.84rem;line-height:1.5}
+.ia-msg-bot{background:var(--s2);border:1px solid var(--b);align-self:flex-start;border-bottom-left-radius:4px}
+.ia-msg-user{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.25);align-self:flex-end;border-bottom-right-radius:4px;color:rgba(255,255,255,.9)}
+.ia-input-area{padding:14px 16px;border-top:1px solid var(--b)}
+.ia-quick-btns{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.ia-quick{background:var(--s3);border:1px solid var(--b);border-radius:20px;padding:5px 11px;font-size:.74rem;color:var(--t2);cursor:pointer;transition:all var(--ease)}
+.ia-quick:hover{border-color:var(--p);color:var(--p-2)}
+.ia-input-row{display:flex;gap:8px}
+.ia-input{flex:1;background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:10px 14px;color:var(--t);font-size:.84rem;outline:none}
+.ia-input:focus{border-color:var(--p)}
+.ia-send{background:var(--p);border:none;border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--ease);flex-shrink:0}
+.ia-send:hover{background:var(--p-2)}
+
+/* AI BTN FLOAT */
+.ai-float{position:fixed;bottom:28px;right:28px;z-index:90;background:var(--p);border:none;border-radius:16px;padding:12px 18px;color:#fff;font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:.875rem;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 12px 32px var(--p-glow);transition:all var(--ease)}
+.ai-float:hover{background:var(--p-2);transform:translateY(-2px)}
+.ai-float-pulse{width:8px;height:8px;border-radius:50%;background:#fff;opacity:.8;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.3);opacity:.4}}
+
+/* RESPONSIVE */
+@media(max-width:800px){
+  .sidebar{display:none}
+  .content{padding:22px 18px}
+  .topbar{padding:0 18px}
+  .grid4{grid-template-columns:1fr 1fr}
+  .ia-chat-panel{width:100%}
+  .frow{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .grid4{grid-template-columns:1fr}
+  .auth-card{padding:34px 24px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ LOGIN ═══════════════════ -->
+<div id="login" class="screen active">
+  <div class="bg-radial"></div>
+  <div class="bg-grid"></div>
+  <div class="auth-card">
+    <div class="brand">Nu<em>Empresas</em></div>
+    <div class="brand-tag">Inteligência Financeira Empresarial</div>
+    <div class="auth-title">Acesse sua empresa</div>
+    <div class="auth-sub">Transformando dados financeiros em decisões inteligentes.</div>
+    <div class="fgroup"><label>CNPJ</label><input id="login-cnpj" type="text" placeholder="00.000.000/0001-00" value="12.345.678/0001-99"/></div>
+    <div class="fgroup"><label>Senha</label><input id="login-pass" type="password" placeholder="••••••••" value="senha123"/></div>
+    <button class="btn-main" onclick="doLogin()">Entrar</button>
+    <div class="auth-links">
+      <div class="auth-link"><a onclick="toast('📧 Link enviado ao seu e-mail!')">Esqueci minha senha</a></div>
+      <div class="auth-link"><a onclick="showScreen('cadastro')">Criar conta</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ CADASTRO ═══════════════════ -->
+<div id="cadastro" class="screen">
+  <div class="bg-radial"></div>
+  <div class="bg-grid"></div>
+  <div class="auth-card" style="max-height:92vh;overflow-y:auto">
+    <button class="btn-ghost" onclick="showScreen('login')">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Voltar
+    </button>
+    <div class="brand" style="margin-bottom:0">Nu<em>Empresas</em></div>
+    <div class="brand-tag" style="margin-bottom:0">Cadastro Empresarial</div>
+    <div class="auth-title" style="margin-top:20px">Crie sua conta</div>
+    <div class="auth-sub">Dados da empresa para acesso à plataforma.</div>
+
+    <div class="fgroup"><label>Razão Social</label><input type="text" placeholder="Empresa Ltda."/></div>
+    <div class="fgroup"><label>Nome Fantasia</label><input type="text" placeholder="Minha Empresa"/></div>
+    <div class="frow">
+      <div class="fgroup" style="margin-bottom:0"><label>CNPJ</label><input type="text" placeholder="00.000.000/0001-00"/></div>
+      <div class="fgroup" style="margin-bottom:0"><label>Telefone</label><input type="text" placeholder="(11) 98888-0000"/></div>
+    </div>
+    <div class="fgroup" style="margin-top:14px"><label>E-mail Empresarial</label><input type="email" placeholder="financeiro@empresa.com.br"/></div>
+    <div class="fgroup">
+      <label>Segmento</label>
+      <select>
+        <option value="">Selecione o segmento</option>
+        <option>Serviços Financeiros</option>
+        <option>Alimentação</option>
+        <option>Construção Civil</option>
+        <option>Tecnologia</option>
+        <option>Saúde</option>
+        <option>Jurídico</option>
+        <option>Outro</option>
+      </select>
+    </div>
+    <div class="divider">Segurança</div>
+    <div class="frow">
+      <div class="fgroup" style="margin-bottom:0"><label>Senha</label><input type="password" placeholder="Mínimo 8 caracteres"/></div>
+      <div class="fgroup" style="margin-bottom:0"><label>Confirmar Senha</label><input type="password" placeholder="Repita a senha"/></div>
+    </div>
+    <button class="btn-main" style="margin-top:18px" onclick="doCadastro()">Criar Empresa</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ APP ═══════════════════ -->
+<div id="app" class="screen">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sb-brand">Nu<em>Empresas</em></div>
+    <div class="sb-sub">Gestão Inteligente</div>
+
+    <div class="sb-section-label">Principal</div>
+    <button class="nav-btn active" onclick="showTab('dashboard',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-btn" onclick="showTab('upload',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload de Planilhas
+    </button>
+    <button class="nav-btn" onclick="showTab('analise',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636-.707.707M21 12h-1M4 12H3m3.343-5.657-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      Análise da IA
+    </button>
+
+    <div class="sb-section-label">Financeiro</div>
+    <button class="nav-btn" onclick="showTab('contas',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 14l2 2 4-4"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg>
+      Contas a Pagar
+    </button>
+    <button class="nav-btn" onclick="showTab('relatorios',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Relatórios
+    </button>
+
+    <button class="nav-btn" onclick="showTab('fluxo',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Fluxo de Caixa
+    </button>
+
+    <div class="sb-section-label">Inteligência IA</div>
+    <button class="nav-btn" onclick="showTab('benchmark',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Benchmark
+    </button>
+    <button class="nav-btn" onclick="showTab('anomalias',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Detector de Anomalias
+    </button>
+    <button class="nav-btn" onclick="showTab('simulador',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      Simulador IA
+    </button>
+
+    <div class="sb-section-label">Empresa</div>
+    <button class="nav-btn" onclick="showTab('perfil',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 21v-4a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v4"/><circle cx="12" cy="7" r="4"/></svg>
+      Perfil da Empresa
+    </button>
+
+    <div class="sb-spacer"></div>
+    <button class="nav-btn nav-logout" onclick="showScreen('login')">
+      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair
+    </button>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="greeting-text">Bem-vinda, <strong id="greeting-name">Tech Solutions Ltda.</strong> 🏢</div>
+      <div class="topbar-right">
+        <button class="icon-btn" onclick="toast('🔔 3 alertas financeiros não lidos')">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div class="notif-dot"></div>
+        </button>
+        <div class="avatar-company">🏢 TS</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ═══ DASHBOARD ═══ -->
+      <div id="tab-dashboard" class="tab active">
+        <div class="dash-hero">
+          <div class="hero-left">
+            <div class="hero-tag">Empresa ativa</div>
+            <div class="hero-company">Tech Solutions Ltda.</div>
+            <div class="hero-cnpj">CNPJ: 12.345.678/0001-99 &bull; Tecnologia</div>
+            <div class="hero-actions">
+              <button class="btn-glass" onclick="showTab('upload',null)">📤 Upload</button>
+              <button class="btn-glass" onclick="showTab('analise',null)">🤖 Análise IA</button>
+              <button class="btn-glass" onclick="showTab('relatorios',null)">📊 Relatórios</button>
+            </div>
+          </div>
+          <div class="hero-score">
+            <div class="score-ring">
+              <svg viewBox="0 0 100 100">
+                <defs>
+                  <linearGradient id="score-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#5B21B6"/>
+                    <stop offset="100%" stop-color="#9D64F5"/>
+                  </linearGradient>
+                </defs>
+                <circle class="score-track" cx="50" cy="50" r="40"/>
+                <circle class="score-fill" cx="50" cy="50" r="40" stroke-dasharray="213 251" stroke-dashoffset="0"/>
+              </svg>
+              <div class="score-num"><span>85</span><small>/100</small></div>
+            </div>
+            <div class="score-label">Score Financeiro IA</div>
+            <div class="score-badge">🟢 Saudável</div>
+          </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="grid4">
+          <div class="stat-card">
+            <div class="s-icon">📈</div>
+            <div class="s-label">Receita Total</div>
+            <div class="s-val" style="color:var(--g)">R$ 128.400</div>
+            <div class="s-trend trend-up">▲ +8% vs mês anterior</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-icon">📉</div>
+            <div class="s-label">Despesas Totais</div>
+            <div class="s-val" style="color:var(--r)">R$ 93.200</div>
+            <div class="s-trend trend-down">▲ +15% vs mês anterior</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-icon">💰</div>
+            <div class="s-label">Lucro</div>
+            <div class="s-val">R$ 35.200</div>
+            <div class="s-trend trend-up">▲ Margem 27,4%</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-icon">📋</div>
+            <div class="s-label">Contas a Pagar</div>
+            <div class="s-val" style="color:var(--y)">R$ 18.500</div>
+            <div class="s-trend trend-neutral">3 vencem esta semana</div>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <!-- Gráfico Receita x Despesa -->
+          <div class="card">
+            <div class="sec-hd"><h2>📊 Receita x Despesa</h2><span style="font-size:.76rem;color:var(--t3)">Últimos 6 meses</span></div>
+            <div class="chart-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:var(--p-2)"></div>Receita</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--r);opacity:.7"></div>Despesa</div>
+            </div>
+            <div class="chart-bars">
+              <div class="bar-group"><div class="bar bar-rev" style="height:55%"></div><div class="bar bar-exp" style="height:68%"></div></div>
+              <div class="bar-group"><div class="bar bar-rev" style="height:62%"></div><div class="bar bar-exp" style="height:60%"></div></div>
+              <div class="bar-group"><div class="bar bar-rev" style="height:70%"></div><div class="bar bar-exp" style="height:65%"></div></div>
+              <div class="bar-group"><div class="bar bar-rev" style="height:78%"></div><div class="bar bar-exp" style="height:72%"></div></div>
+              <div class="bar-group"><div class="bar bar-rev" style="height:85%"></div><div class="bar bar-exp" style="height:76%"></div></div>
+              <div class="bar-group"><div class="bar bar-rev" style="height:100%"></div><div class="bar bar-exp" style="height:88%"></div></div>
+            </div>
+            <div class="chart-labels">
+              <div class="chart-lbl">Jan</div><div class="chart-lbl">Fev</div><div class="chart-lbl">Mar</div>
+              <div class="chart-lbl">Abr</div><div class="chart-lbl">Mai</div><div class="chart-lbl">Jun</div>
+            </div>
+          </div>
+
+          <!-- Semáforo + Gastos por Categoria -->
+          <div class="card">
+            <div class="sec-hd"><h2>🚦 Semáforo Financeiro</h2></div>
+            <div class="semaforo" style="margin-bottom:18px">
+              <div class="sema-item">
+                <div class="sema-dot sema-g"></div>
+                <div class="sema-label">Fluxo de Caixa</div>
+                <div class="sema-val">R$ +35.200</div>
+              </div>
+              <div class="sema-item">
+                <div class="sema-dot sema-y"></div>
+                <div class="sema-label">Gastos Operacionais</div>
+                <div class="sema-val">+15% este mês</div>
+              </div>
+              <div class="sema-item">
+                <div class="sema-dot sema-r"></div>
+                <div class="sema-label">Impostos em Atraso</div>
+                <div class="sema-val">R$ 4.200 em risco</div>
+              </div>
+              <div class="sema-item">
+                <div class="sema-dot sema-g"></div>
+                <div class="sema-label">Margem de Lucro</div>
+                <div class="sema-val">27,4% (meta: 25%)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <!-- Pizza -->
+          <div class="card">
+            <div class="sec-hd"><h2>🍕 Gastos por Categoria</h2></div>
+            <div class="pizza-wrap">
+              <svg width="120" height="120" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="var(--p-2)" stroke-width="3.2" stroke-dasharray="38 62" stroke-dashoffset="0"/>
+                <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="var(--r)" stroke-width="3.2" stroke-dasharray="22 78" stroke-dashoffset="-38"/>
+                <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="var(--y)" stroke-width="3.2" stroke-dasharray="18 82" stroke-dashoffset="-60"/>
+                <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#60A5FA" stroke-width="3.2" stroke-dasharray="12 88" stroke-dashoffset="-78"/>
+                <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="var(--g)" stroke-width="3.2" stroke-dasharray="10 90" stroke-dashoffset="-90"/>
+              </svg>
+              <div class="pizza-legend">
+                <div class="pizza-item"><div class="pizza-dot" style="background:var(--p-2)"></div>Funcionários — 38%</div>
+                <div class="pizza-item"><div class="pizza-dot" style="background:var(--r)"></div>Fornecedores — 22%</div>
+                <div class="pizza-item"><div class="pizza-dot" style="background:var(--y)"></div>Impostos — 18%</div>
+                <div class="pizza-item"><div class="pizza-dot" style="background:#60A5FA"></div>Marketing — 12%</div>
+                <div class="pizza-item"><div class="pizza-dot" style="background:var(--g)"></div>Operacional — 10%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ranking de Gastos -->
+          <div class="card">
+            <div class="sec-hd"><h2>🏆 Top 5 Maiores Gastos</h2></div>
+            <div class="rank-item">
+              <div class="rank-num">1</div>
+              <div class="rank-body">
+                <div class="rank-name">Salários e Encargos</div>
+                <div class="rank-bar-wrap"><div class="rank-fill" style="width:100%"></div></div>
+              </div>
+              <div class="rank-val" style="color:var(--r)">R$ 35.400</div>
+            </div>
+            <div class="rank-item">
+              <div class="rank-num">2</div>
+              <div class="rank-body">
+                <div class="rank-name">Impostos e Taxas</div>
+                <div class="rank-bar-wrap"><div class="rank-fill" style="width:58%"></div></div>
+              </div>
+              <div class="rank-val" style="color:var(--r)">R$ 20.500</div>
+            </div>
+            <div class="rank-item">
+              <div class="rank-num">3</div>
+              <div class="rank-body">
+                <div class="rank-name">Fornecedores</div>
+                <div class="rank-bar-wrap"><div class="rank-fill" style="width:46%"></div></div>
+              </div>
+              <div class="rank-val" style="color:var(--r)">R$ 16.300</div>
+            </div>
+            <div class="rank-item">
+              <div class="rank-num">4</div>
+              <div class="rank-body">
+                <div class="rank-name">Marketing Digital</div>
+                <div class="rank-bar-wrap"><div class="rank-fill" style="width:31%"></div></div>
+              </div>
+              <div class="rank-val" style="color:var(--r)">R$ 11.200</div>
+            </div>
+            <div class="rank-item">
+              <div class="rank-num">5</div>
+              <div class="rank-body">
+                <div class="rank-name">Infraestrutura</div>
+                <div class="rank-bar-wrap"><div class="rank-fill" style="width:27%"></div></div>
+              </div>
+              <div class="rank-val" style="color:var(--r)">R$ 9.800</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IA Insights -->
+        <div class="card">
+          <div class="sec-hd"><h2>🤖 Área IA — Insights Financeiros</h2><span class="badge b-purple">IA Ativa</span></div>
+          <div class="ai-insights-list">
+            <div class="ai-box">
+              <div class="ai-icon">⚠️</div>
+              <div class="ai-content">
+                <div class="ai-label">Alerta de Despesa</div>
+                <div class="ai-text">Suas despesas aumentaram 15% em relação ao mês anterior. O principal responsável é o aumento nos gastos com fornecedores.</div>
+              </div>
+            </div>
+            <div class="ai-box">
+              <div class="ai-icon">🔴</div>
+              <div class="ai-content">
+                <div class="ai-label">Risco de Fluxo de Caixa</div>
+                <div class="ai-text">Existe risco de fluxo de caixa negativo nos próximos 30 dias caso as contas a pagar não sejam quitadas até o prazo.</div>
+              </div>
+            </div>
+            <div class="ai-box">
+              <div class="ai-icon">💡</div>
+              <div class="ai-content">
+                <div class="ai-label">Recomendação</div>
+                <div class="ai-text">Recomendação: reduzir despesas operacionais em 8% pode resultar em economia de R$ 7.456 no próximo trimestre.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ UPLOAD ═══ -->
+      <div id="tab-upload" class="tab">
+        <div class="page-hd">
+          <div class="page-hd-left"><h1>Upload de Planilhas</h1><p>Importe seus dados financeiros para análise com IA</p></div>
+        </div>
+
+        <div class="card">
+          <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+            <div class="upload-icon">📊</div>
+            <div class="upload-title">Arraste aqui seu arquivo</div>
+            <div class="upload-sub">ou clique para selecionar do seu computador</div>
+            <button class="btn-main-sm" onclick="event.stopPropagation();document.getElementById('file-input').click()">Selecionar Arquivo</button>
+            <div class="upload-tag">Aceito: Excel (.xlsx) e CSV &bull; Tamanho máximo: 50 MB</div>
+            <input type="file" id="file-input" accept=".xlsx,.csv" style="display:none" onchange="handleFile(this)"/>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sec-hd"><h2>📁 Arquivos Importados</h2><span class="badge b-green">3 ativos</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div class="file-item">
+              <div class="file-ico">📗</div>
+              <div class="file-body">
+                <div class="file-name">financeiro_maio_2026.xlsx</div>
+                <div class="file-meta">1.248 registros &bull; Importado em 15/05/2026 &bull; <span style="color:var(--g)">✓ Processado</span></div>
+              </div>
+              <span class="badge b-green">OK</span>
+            </div>
+            <div class="file-item">
+              <div class="file-ico">📗</div>
+              <div class="file-body">
+                <div class="file-name">despesas_abril_2026.xlsx</div>
+                <div class="file-meta">892 registros &bull; Importado em 02/05/2026 &bull; <span style="color:var(--g)">✓ Processado</span></div>
+              </div>
+              <span class="badge b-green">OK</span>
+            </div>
+            <div class="file-item">
+              <div class="file-ico">📄</div>
+              <div class="file-body">
+                <div class="file-name">fluxo_caixa_q1.csv</div>
+                <div class="file-meta">3.670 registros &bull; Importado em 10/04/2026 &bull; <span style="color:var(--y)">⏳ Processando...</span></div>
+              </div>
+              <span class="badge b-yellow">Aguarde</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ANÁLISE IA ═══ -->
+      <div id="tab-analise" class="tab">
+        <div class="page-hd">
+          <div class="page-hd-left"><h1>Análise da IA</h1><p>Insights gerados por inteligência artificial com base nos seus dados</p></div>
+          <span class="badge b-purple" style="font-size:.78rem;padding:6px 14px">🤖 IA Financeira</span>
+        </div>
+
+        <div class="grid3">
+          <div class="stat-card">
+            <div class="s-icon">📈</div>
+            <div class="s-label">Receitas (Analisadas)</div>
+            <div class="s-val" style="color:var(--g)">R$ 128.400</div>
+            <div class="s-trend trend-up">▲ +8% vs mês ant.</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-icon">📉</div>
+            <div class="s-label">Despesas (Analisadas)</div>
+            <div class="s-val" style="color:var(--r)">R$ 93.200</div>
+            <div class="s-trend trend-down">▲ +15% vs mês ant.</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-icon">💰</div>
+            <div class="s-label">Lucro Líquido</div>
+            <div class="s-val">R$ 35.200</div>
+            <div class="s-trend trend-up">▲ Margem 27,4%</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sec-hd"><h2>🔍 IA Encontrou — Alertas</h2></div>
+          <div class="ai-insights-list">
+            <div class="ai-box">
+              <div class="ai-icon">💸</div>
+              <div class="ai-content">
+                <div class="ai-label">Gastos Excessivos</div>
+                <div class="ai-text">Despesas com fornecedores cresceram 28% em 60 dias — acima da média do seu segmento (Tecnologia: 12%). Recomenda-se renegociar contratos.</div>
+              </div>
+            </div>
+            <div class="ai-box">
+              <div class="ai-icon">🚨</div>
+              <div class="ai-content">
+                <div class="ai-label">Despesas Fora do Padrão</div>
+                <div class="ai-text">Detectado gasto atípico de R$ 12.000 em "Outros Serviços" em 22/04/2026. Sem categoria definida. Verificação recomendada.</div>
+              </div>
+            </div>
+            <div class="ai-box">
+              <div class="ai-icon">⚡</div>
+              <div class="ai-content">
+                <div class="ai-label">Risco Financeiro</div>
+                <div class="ai-text">Com o ritmo atual de despesas, o caixa pode entrar em risco nos próximos 45 dias. Fluxo de entrada precisa crescer ou despesas serem cortadas em 10%.</div>
+              </div>
+            </div>
+            <div class="ai-box">
+              <div class="ai-icon">✅</div>
+              <div class="ai-content">
+                <div class="ai-label">Oportunidades de Economia</div>
+                <div class="ai-text">Identificado R$ 6.240 em serviços duplicados (dois softwares com função similar). Cancelando um, você economiza R$ 74.880 por ano.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sec-hd"><h2>🔮 Previsão Financeira — Próximo Mês</h2></div>
+          <div class="ai-box">
+            <div class="ai-icon">🤖</div>
+            <div class="ai-content">
+              <div class="ai-label">Projeção IA — Julho 2026</div>
+              <div class="ai-text">Mantendo o ritmo atual, a empresa terá <strong>lucro estimado de R$ 35.000</strong> no próximo mês. Porém, se as despesas continuarem crescendo 15% ao mês, o lucro pode cair para R$ 18.000 em setembro. A IA recomenda corte de 8% nas despesas operacionais e renegociação de 2 contratos de fornecedor.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ CONTAS A PAGAR ═══ -->
+      <div id="tab-contas" class="tab">
+        <div class="page-hd">
+          <div class="page-hd-left"><h1>Contas a Pagar</h1><p>Gerencie seus compromissos financeiros</p></div>
+          <button class="btn-main-sm" onclick="toast('➕ Nova conta adicionada!')">+ Adicionar Conta</button>
+        </div>
+
+        <div class="conta-priority">
+          <div class="priority-tag">🤖 IA — Prioridade Alta</div>
+          <div class="priority-title">Fornecedor XPTO — Vence em 2 dias &bull; Risco de multa de 5%</div>
+        </div>
+
+        <div class="card">
+          <div class="tbl-wrap">
+            <table>
+              <thead>
+                <tr><th>Empresa</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Prioridade IA</th><th>Ações</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Fornecedor XPTO</strong></td>
+                  <td style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700;color:var(--r)">R$ 8.400</td>
+                  <td style="color:var(--r);font-weight:600">31/05/2026 ⚠️</td>
+                  <td><span class="badge b-red">Urgente</span></td>
+                  <td><span class="badge b-red">🤖 Alta</span></td>
+                  <td><button class="btn-main-sm" style="padding:6px 12px;font-size:.75rem" onclick="toast('✅ Conta marcada como paga!')">Pagar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Aluguel Comercial</strong></td>
+                  <td style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700">R$ 4.500</td>
+                  <td>05/06/2026</td>
+                  <td><span class="badge b-yellow">Pendente</span></td>
+                  <td><span class="badge b-yellow">🤖 Média</span></td>
+                  <td><button class="btn-outline btn-sm" onclick="toast('✅ Conta marcada como paga!')">Pagar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Fornecedor Beta</strong></td>
+                  <td style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700">R$ 3.200</td>
+                  <td>10/06/2026</td>
+                  <td><span class="badge b-yellow">Pendente</span></td>
+                  <td><span class="badge b-blue">🤖 Baixa</span></td>
+                  <td><button class="btn-outline btn-sm" onclick="toast('✅ Conta marcada como paga!')">Pagar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Internet Corporativa</strong></td>
+                  <td style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700">R$ 890</td>
+                  <td>12/06/2026</td>
+                  <td><span class="badge b-green">Em dia</span></td>
+                  <td><span class="badge b-blue">🤖 Baixa</span></td>
+                  <td><button class="btn-outline btn-sm" onclick="toast('✅ Conta marcada como paga!')">Pagar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Folha de Pagamento</strong></td>
+                  <td style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700;color:var(--y)">R$ 35.400</td>
+                  <td>30/06/2026</td>
+                  <td><span class="badge b-yellow">Pendente</span></td>
+                  <td><span class="badge b-red">🤖 Alta</span></td>
+                  <td><button class="btn-outline btn-sm" onclick="toast('✅ Conta marcada como paga!')">Pagar</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ RELATÓRIOS ═══ -->
+      <div id="tab-relatorios" class="tab">
+        <div class="page-hd">
+          <div class="page-hd-left"><h1>Relatórios</h1><p>Análises detalhadas por período</p></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn-outline btn-sm" onclick="toast('📄 Relatório exportado em PDF!')">⬇ PDF</button>
+            <button class="btn-main-sm" onclick="toast('📊 Relatório exportado em Excel!')">⬇ Excel</button>
+          </div>
+        </div>
+
+        <div class="grid3">
+          <div class="report-btn active" onclick="selectReport(this,'Relatório Mensal — Maio/2026')">
+            <div class="report-period">Período</div>
+            <div class="report-name">📅 Mensal</div>
+          </div>
+          <div class="report-btn" onclick="selectReport(this,'Relatório Trimestral — Q2 2026')">
+            <div class="report-period">Período</div>
+            <div class="report-name">📆 Trimestral</div>
+          </div>
+          <div class="report-btn" onclick="selectReport(this,'Relatório Anual — 2026')">
+            <div class="report-period">Período</div>
+            <div class="report-name">🗓 Anual</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sec-hd"><h2 id="report-title">📋 Relatório Mensal — Maio/2026</h2></div>
+          <div class="grid2" style="margin-bottom:0">
+            <div>
+              <div class="grid2" style="gap:10px">
+                <div class="kpi-card">
+                  <div class="kpi-label">Receita</div>
+                  <div class="kpi-val" style="color:var(--g)">R$ 128.400</div>
+                  <div class="kpi-trend trend-up">▲ +8%</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">Lucro</div>
+                  <div class="kpi-val">R$ 35.200</div>
+                  <div class="kpi-trend trend-up">▲ +3%</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">Crescimento</div>
+                  <div class="kpi-val" style="color:var(--p-2)">+12,4%</div>
+                  <div class="kpi-trend trend-up">vs trimestre</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">Fluxo de Caixa</div>
+                  <div class="kpi-val" style="color:var(--y)">R$ 18.900</div>
+                  <div class="kpi-trend trend-neutral">Positivo</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:.78rem;color:var(--t2);margin-bottom:14px;font-style:italic">Gerado automaticamente pela IA financeira com base nos dados importados.</div>
+              <div class="ai-box">
+                <div class="ai-icon">📊</div>
+                <div class="ai-content">
+                  <div class="ai-label">Resumo IA do Período</div>
+                  <div class="ai-text">Maio foi um mês positivo com lucro de R$ 35.200, porém com alerta em despesas crescentes. A empresa mantém crescimento sustentável mas precisa de atenção nas contas a pagar para preservar o fluxo de caixa.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PERFIL ═══ -->
+      <div id="tab-perfil" class="tab">
+        <div class="page-hd">
+          <div class="page-hd-left"><h1>Perfil da Empresa</h1><p>Dados cadastrais e configurações</p></div>
+          <button class="btn-main-sm" onclick="toast('✏️ Edição salva com sucesso!')">Salvar Alterações</button>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <div class="sec-hd"><h2>🏢 Dados da Empresa</h2><button class="btn-outline btn-sm" onclick="toast('✏️ Modo edição ativo')">Editar</button></div>
+            <div class="info-grid">
+              <div class="info-block" style="grid-column:1/-1"><div class="info-lbl">Razão Social</div><div class="info-val">Tech Solutions Ltda.</div></div>
+              <div class="info-block"><div class="info-lbl">Nome Fantasia</div><div class="info-val">TechSol</div></div>
+              <div class="info-block"><div class="info-lbl">CNPJ</div><div class="info-val">12.345.678/0001-99</div></div>
+              <div class="info-block"><div class="info-lbl">E-mail</div><div class="info-val">financeiro@techsol.com.br</div></div>
+              <div class="info-block"><div class="info-lbl">Telefone</div><div class="info-val">(11) 98765-4321</div></div>
+              <div class="info-block"><div class="info-lbl">Segmento</div><div class="info-val">Tecnologia</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="sec-hd"><h2>⚙️ Configurações</h2></div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="info-block" style="cursor:pointer" onclick="toast('🔑 Link de alteração de senha enviado!')">
+                <div class="info-lbl">Senha</div>
+                <div class="info-val" style="color:var(--p-2)">→ Alterar senha</div>
+              </div>
+              <div class="info-block" style="cursor:pointer" onclick="toast('🖼️ Faça upload do novo logo!')">
+                <div class="info-lbl">Logo da Empresa</div>
+                <div class="info-val" style="color:var(--p-2)">→ Alterar logo</div>
+              </div>
+              <div class="info-block" style="cursor:pointer" onclick="toast('🔔 Notificações configuradas!')">
+                <div class="info-lbl">Notificações</div>
+                <div class="info-val" style="color:var(--p-2)">→ Configurar notificações</div>
+              </div>
+              <div class="info-block">
+                <div class="info-lbl">Plano Atual</div>
+                <div class="info-val"><span class="badge b-purple">NuEmpresas Pro</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Score na tela de perfil -->
+        <div class="card">
+          <div class="sec-hd"><h2>🤖 Score Financeiro IA</h2><span class="badge b-green">Atualizado hoje</span></div>
+          <div style="display:flex;align-items:center;gap:32px;flex-wrap:wrap">
+            <div style="text-align:center">
+              <div style="font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:3.5rem;color:var(--p-2);letter-spacing:-.05em;line-height:1">85</div>
+              <div style="font-size:.78rem;color:var(--t2);margin-top:4px">de 100 pontos</div>
+              <div class="badge b-green" style="margin-top:8px">🟢 Saudável</div>
+            </div>
+            <div style="flex:1;min-width:200px">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:5px"><span style="color:var(--t2)">Fluxo de Caixa</span><span style="color:var(--g)">92/100</span></div>
+                  <div class="prog-bar"><div class="prog-fill prog-fill-g" style="width:92%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:5px"><span style="color:var(--t2)">Controle de Despesas</span><span style="color:var(--y)">71/100</span></div>
+                  <div class="prog-bar"><div class="prog-fill prog-fill-y" style="width:71%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:5px"><span style="color:var(--t2)">Margem de Lucro</span><span style="color:var(--g)">88/100</span></div>
+                  <div class="prog-bar"><div class="prog-fill prog-fill-g" style="width:88%"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:5px"><span style="color:var(--t2)">Adimplência</span><span style="color:var(--r)">64/100</span></div>
+                  <div class="prog-bar"><div class="prog-fill prog-fill-r" style="width:64%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ FLUXO DE CAIXA ═══ -->
+      <div id="tab-fluxo" class="tab">
+        <div class="page-hd">
+          <div class="page-hd-left"><h1>Fluxo de Caixa Futuro</h1><p>Previsões financeiras geradas pela IA para os próximos 30 dias</p></div>
+          <span class="badge b-purple" style="font-size:.78rem;padding:6px 14px">🤖 Previsão IA</span>
+        </div>
+
+        <div class="grid3">
+          <div class="stat-card">
+            <div class="s-icon">📈</div>
+            <div class="s-label">Receitas Previstas</div>
+            <div class="s-val" style="color:var(--g)">R$ 80.000</div>
+            <div class="s-trend trend-up">Próximos 30 dias</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-icon">📉</div>
+            <div class="s-label">Despesas Previstas</div>
+            <div class="s-val" style="color:var(--r)">R$ 65.000</div>
+            <div class="s-trend trend-down">Próximos 30 dias</div>
+          </div>
+          <div class="stat-card">
+            <div class="s-icon">💰</div>
+            <div class="s-label">Saldo Previsto</div>
+            <div class="s-val" style="color:var(--y)">R$ 15.000</div>
+            <div class="s-trend trend-neutral">⚠️ Atenção no dia 25/06</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sec-hd"><h2>📊 Evolução do Caixa — Próximos 30 dias</h2></div>
+          <!-- SVG line chart -->
+          <div style="position:relative;width:100%;height:160px;margin-bottom:8px">
+            <svg width="100%" height="160" viewBox="0 0 600 160" preserveAspectRatio="none" style="overflow:visible">
+              <defs>
+                <linearGradient id="line-grad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="rgba(124,58,237,.35)"/>
+                  <stop offset="100%" stop-color="rgba(124,58,237,0)"/>
+                </linearGradient>
+              </defs>
+              <!-- grid lines -->
+              <line x1="0" y1="32" x2="600" y2="32" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+              <line x1="0" y1="64" x2="600" y2="64" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+              <line x1="0" y1="96" x2="600" y2="96" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+              <line x1="0" y1="128" x2="600" y2="128" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
+              <!-- area fill -->
+              <path d="M0,40 C80,30 120,20 200,35 C280,50 300,85 380,110 C420,122 460,90 530,60 L530,160 L0,160 Z" fill="url(#line-grad)"/>
+              <!-- line -->
+              <path d="M0,40 C80,30 120,20 200,35 C280,50 300,85 380,110 C420,122 460,90 530,60" fill="none" stroke="var(--p-2)" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- danger zone marker day 25 -->
+              <line x1="380" y1="0" x2="380" y2="160" stroke="rgba(248,113,113,.3)" stroke-width="1.5" stroke-dasharray="4 3"/>
+              <circle cx="380" cy="110" r="5" fill="var(--r)"/>
+              <text x="385" y="106" font-size="9" fill="var(--r)" font-family="sans-serif">Risco 25/06</text>
+              <!-- dots -->
+              <circle cx="0"   cy="40"  r="4" fill="var(--p-2)"/>
+              <circle cx="200" cy="35"  r="4" fill="var(--p-2)"/>
+              <circle cx="530" cy="60"  r="4" fill="var(--g)"/>
+            </svg>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:0 2px">
+            <span style="font-size:.72rem;color:var(--t3)">Hoje</span>
+            <span style="font-size:.72rem;color:var(--t3)">7 dias</span>
+            <span style="font-size:.72rem;color:var(--t3)">15 dias</span>
+            <span style="font-size:.72rem;color:var(--r);font-weight:600">25 dias ⚠️</span>
+            <span style="font-size:.72rem;color:var(--t3)">30 dias</span>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <div class="sec-hd"><h2>🤖 Análise da IA</h2></div>
+            <div class="ai-box">
+              <div class="ai-icon">⚠️</div>
+              <div class="ai-content">
+                <div class="ai-label">Alerta de Risco</div>
+                <div class="ai-text">Existe risco de saldo negativo no dia 25/06 devido ao vencimento simultâneo de fornecedores e folha de pagamento totalizando R$ 43.800.</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="sec-hd"><h2>💡 Recomendações IA</h2></div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s2);border-radius:10px">
+                <span style="font-size:1.1rem">⚡</span>
+                <span style="font-size:.855rem">Antecipar recebimentos de clientes em aberto (R$ 22.000 disponíveis)</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s2);border-radius:10px">
+                <span style="font-size:1.1rem">🤝</span>
+                <span style="font-size:.855rem">Renegociar prazo com Fornecedor XPTO — empurrar vencimento 7 dias</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s2);border-radius:10px">
+                <span style="font-size:1.1rem">✂️</span>
+                <span style="font-size:.855rem">Reduzir gastos operacionais não essenciais na 3ª semana de Junho</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ BENCHMARK ═══ -->
+      <div id="tab-benchmark" class="tab">
+        <div class="page-hd">
+          <div class="page-hd-left"><h1>Benchmark do Mercado</h1><p>Compare sua empresa com outras do mesmo segmento</p></div>
+          <div style="display:flex;align-items:center;gap:8px;background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:8px 14px">
+            <span style="font-size:.75rem;color:var(--t3)">Segmento:</span>
+            <span style="font-size:.85rem;font-weight:600;color:var(--p-2)">💻 Tecnologia</span>
+          </div>
+        </div>
+
+        <!-- Score comparativo hero -->
+        <div class="card" style="background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(93,45,183,.05));border-color:rgba(124,58,237,.2)">
+          <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap">
+            <div style="text-align:center">
+              <div style="font-family:'Cabinet Grotesk',sans-serif;font-weight:900;font-size:3rem;color:var(--p-2);letter-spacing:-.05em;line-height:1">82</div>
+              <div style="font-size:.75rem;color:var(--t2);margin-top:3px">Score Comparativo</div>
+            </div>
+            <div>
+              <div style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:6px">Acima de 73% das empresas do setor</div>
+              <div class="badge b-green">🟢 Posição Forte no Mercado</div>
+              <div style="font-size:.8rem;color:var(--t2);margin-top:8px">Baseado em 1.240 empresas de Tecnologia analisadas pela IA</div>
+            </div>
+            <!-- mini ranking bars -->
+            <div style="flex:1;min-width:180px">
+              <div style="font-size:.72rem;color:var(--t3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em;font-weight:700">Ranking no setor</div>
+              <div style="height:10px;background:var(--s3);border-radius:6px;overflow:hidden;margin-bottom:6px">
+                <div style="width:73%;height:100%;background:linear-gradient(90deg,var(--p-3),var(--p-2));border-radius:6px"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--t3)"><span>0%</span><span style="color:var(--p-2);font-weight:600">Você → 73%</span><span>100%</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comparações -->
+        <div class="card">
+          <div class="sec-hd"><h2>📊 Comparação de Indicadores</h2><span style="font-size:.76rem;color:var(--t3)">Sua empresa vs Mercado</span></div>
+          <div style="display:flex;flex-direction:column;gap:20px">
+
+            <!-- Fornecedores -->
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+                <span style="font-weight:600;font-size:.9rem">Fornecedores</span>
+                <span class="badge b-red">🔴 Acima da média</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-end;margin-bottom:6px">
+                <div style="flex:1">
+                  <div style="font-size:.72rem;color:var(--t2);margin-bottom:4px">Sua empresa — 22%</div>
+                  <div class="prog-bar" style="height:8px"><div class="prog-fill prog-fill-r" style="width:22%"></div></div>
+                </div>
+                <div style="flex:1">
+                  <div style="font-size:.72rem;color:var(--t2);margin-bottom:4px">Mercado — 15%</div>
+                  <div class="prog-bar" style="height:8px"><div class="prog-fill prog-fill-g" style="width:15%"></div></div>
+                </div>
+              </div>
+              <div style="font-size:.78rem;color:var(--r)">▲ +7% acima do mercado — renegociação recomendada</div>
+            </div>
+
+            <!-- Marketing -->
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+                <span style="font-weight:600;font-size:.9rem">Marketing</span>
+                <span class="badge b-green">🟢 Abaixo da média</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-end;margin-bottom:6px">
+                <div style="flex:1">
+                  <div style="font-size:.72rem;color:var(--t2);margin-bottom:4px">Sua empresa — 8%</div>
+                  <div class="prog-bar" style="height:8px"><div class="prog-fill prog-fill-g" style="width:8%"></div></div>
+                </div>
+                <div style="flex:1">
+                  <div style="font-size:.72rem;color:var(--t2);margin-bottom:4px">Mercado — 12%</div>
+                  <div class="prog-bar" style="height:8px"><div class="prog-fill" style="width:12%"></div></div>
+                </div>
+              </div>
+              <div style="font-size:.78rem;color:var(--g)">▼ 4% abaixo — potencial de crescimento com mais investimento</div>
+            </div>
+
+            <!-- Folha -->
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+                <span style="font-weight:600;font-size:.9rem">Folha de Pagamento</span>
+                <span class="badge b-yellow">🟡 Levemente acima</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:flex-end;margin-bottom:6px">
+                <div style="flex:1">
+                  <div style="font-size:.72rem;color:var(--t2);margin-bottom:4px">Sua empresa — 38%</div>
+                  <div class="prog-bar" style="height:8px"><div class="prog-fill prog-fill-y" style="width:38%"></div></div>
+                </div>
+                <div style="flex:1">
+                  <div style="font-size:.72rem;color:var(--t2);margin-bottom:4px">Mercado — 35%</div>
+                  <div class="prog-bar" style="height:8px"><div class="prog-fill" style="width:35%"></div></div>
+                </div>
+              </div>
+              <div style="font-size:.78rem;color:var(--y)">▲ +3% — dentro do aceitável mas monitorar crescimento</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="ai-box">
+          <div class="ai-icon">🤖</div>
+          <div class="ai-content">
+            <div class="ai-label">Insight IA — Benchmark</div>
+            <div class="ai-text">Sua empresa possui gastos elevados com fornecedores (22% vs 15% do mercado). Uma renegociação de contratos pode gerar economia de até R$ 4.500 por mês, impactando positivamente seu Score de 82 para até 88 pontos.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ ANOMALIAS ═══ -->
+      <div id="tab-anomalias" class="tab">
+        <div class="page-hd">
+          <div class="page-hd-left"><h1>Detector de Anomalias</h1><p>Gastos suspeitos ou fora do padrão histórico identificados pela IA</p></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span class="badge b-red" style="font-size:.8rem;padding:7px 14px">🚨 4 Anomalias</span>
+          </div>
+        </div>
+
+        <!-- Resumo -->
+        <div class="grid3">
+          <div class="stat-card" style="border-color:rgba(248,113,113,.2)">
+            <div class="s-icon">🔴</div>
+            <div class="s-label">Críticas</div>
+            <div class="s-val" style="color:var(--r)">2</div>
+            <div class="s-trend trend-down">Investigação urgente</div>
+          </div>
+          <div class="stat-card" style="border-color:rgba(251,191,36,.2)">
+            <div class="s-icon">🟡</div>
+            <div class="s-label">Atenção</div>
+            <div class="s-val" style="color:var(--y)">1</div>
+            <div class="s-trend trend-neutral">Monitorar</div>
+          </div>
+          <div class="stat-card" style="border-color:rgba(52,211,153,.2)">
+            <div class="s-icon">🟢</div>
+            <div class="s-label">Resolvidas</div>
+            <div class="s-val" style="color:var(--g)">1</div>
+            <div class="s-trend trend-up">Revisado</div>
+          </div>
+        </div>
+
+        <!-- Tabela -->
+        <div class="card">
+          <div class="sec-hd"><h2>📋 Anomalias Detectadas</h2></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Categoria</th><th>Valor</th><th>Média Histórica</th><th>Variação</th><th>Situação</th><th>Ação</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><strong>Serviços Externos</strong></td>
+                  <td style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700;color:var(--r)">R$ 12.000</td>
+                  <td style="color:var(--t2)">R$ 4.500</td>
+                  <td style="color:var(--r);font-weight:700">+166%</td>
+                  <td><span class="badge b-red">🔴 Crítico</span></td>
+                  <td><button class="btn-danger-sm" onclick="openAnomalia()">Investigar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Marketing</strong></td>
+                  <td style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700;color:var(--y)">R$ 5.500</td>
+                  <td style="color:var(--t2)">R$ 3.200</td>
+                  <td style="color:var(--y);font-weight:700">+71%</td>
+                  <td><span class="badge b-yellow">🟡 Atenção</span></td>
+                  <td><button class="btn-outline btn-sm" onclick="toast('🔍 Análise de marketing iniciada!')">Investigar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Assinatura Software</strong></td>
+                  <td style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700">R$ 3.000</td>
+                  <td style="color:var(--t2)">R$ 1.800</td>
+                  <td style="color:var(--y);font-weight:700">+66%</td>
+                  <td><span class="badge b-red">🔴 Crítico</span></td>
+                  <td><button class="btn-danger-sm" onclick="toast('🔍 Auditoria iniciada!')">Investigar</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Transporte</strong></td>
+                  <td style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700">R$ 980</td>
+                  <td style="color:var(--t2)">R$ 750</td>
+                  <td style="color:var(--g);font-weight:700">+30%</td>
+                  <td><span class="badge b-green">🟢 Revisado</span></td>
+                  <td><button class="btn-outline btn-sm" style="opacity:.5;cursor:default">Concluído</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Card principal anomalia -->
+        <div class="card" style="border-color:rgba(248,113,113,.25);background:linear-gradient(135deg,rgba(248,113,113,.06),rgba(248,113,113,.02))">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+            <span style="font-size:1.5rem">🚨</span>
+            <div>
+              <div style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:1.05rem;color:var(--r)">Gasto Incomum Detectado</div>
+              <div style="font-size:.78rem;color:var(--t2)">Detectado em 22/04/2026 — Auditoria recomendada</div>
+            </div>
+          </div>
+          <div class="grid2" style="margin-bottom:16px">
+            <div class="info-grid">
+              <div class="info-block"><div class="info-lbl">Categoria</div><div class="info-val">Serviços Externos</div></div>
+              <div class="info-block"><div class="info-lbl">Valor Registrado</div><div class="info-val" style="color:var(--r);font-weight:700">R$ 12.000</div></div>
+              <div class="info-block"><div class="info-lbl">Histórico Médio</div><div class="info-val">R$ 4.500</div></div>
+              <div class="info-block"><div class="info-lbl">Diferença</div><div class="info-val" style="color:var(--r);font-weight:700">+166% ▲</div></div>
+            </div>
+            <div class="ai-box" style="height:fit-content">
+              <div class="ai-icon">🤖</div>
+              <div class="ai-content">
+                <div class="ai-label">IA Explica</div>
+                <div class="ai-text">Este gasto está muito acima da média histórica da empresa. Sem categoria detalhada no lançamento. Recomenda-se auditoria imediata da despesa e solicitação de nota fiscal ao fornecedor.</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn-danger-sm" style="padding:11px 22px" onclick="toast('🔍 Processo de investigação iniciado!')">🔍 Investigar</button>
+            <button class="btn-outline" onclick="toast('✅ Marcado como Revisado!')">✅ Marcar como Revisado</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ SIMULADOR IA ═══ -->
+      <div id="tab-simulador" class="tab">
+        <div class="page-hd">
+          <div class="page-hd-left"><h1>Simulador IA</h1><p>Teste cenários financeiros e veja o impacto projetado pela inteligência artificial</p></div>
+          <span class="badge b-purple" style="font-size:.78rem;padding:6px 14px">🤖 Powered by IA</span>
+        </div>
+
+        <!-- Campo de pergunta livre -->
+        <div class="card">
+          <div class="sec-hd"><h2>💬 Simule um Cenário</h2></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <input id="sim-input" type="text" placeholder="Ex: E se eu reduzir gastos em 10%?" value="E se eu reduzir gastos em 10%?"
+              style="flex:1;min-width:220px;background:var(--s2);border:1px solid var(--b);border-radius:11px;padding:13px 16px;color:var(--t);font-size:.925rem;outline:none"
+              onkeydown="if(event.key==='Enter')simular()"/>
+            <button class="btn-main-sm" style="padding:13px 26px;font-size:.925rem" onclick="simular()">🤖 Simular</button>
+          </div>
+          <div style="margin-top:14px">
+            <div style="font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:10px">Cenários Rápidos</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <button class="ia-quick" style="font-size:.8rem;padding:8px 14px" onclick="simCenario('contratar2')">👥 Contratar 2 funcionários</button>
+              <button class="ia-quick" style="font-size:.8rem;padding:8px 14px" onclick="simCenario('marketing20')">📣 Aumentar marketing em 20%</button>
+              <button class="ia-quick" style="font-size:.8rem;padding:8px 14px" onclick="simCenario('fornecedor15')">📦 Reduzir fornecedores em 15%</button>
+              <button class="ia-quick" style="font-size:.8rem;padding:8px 14px" onclick="simCenario('filial')">🏢 Abrir nova filial</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resultado padrão -->
+        <div id="sim-resultado" class="card" style="border-color:rgba(124,58,237,.25);background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(93,45,183,.03))">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+            <div style="width:38px;height:38px;border-radius:12px;background:rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🤖</div>
+            <div>
+              <div style="font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:1rem">Resultado da Simulação</div>
+              <div style="font-size:.78rem;color:var(--p-2)" id="sim-subtitulo">Reduzir gastos operacionais em 10%</div>
+            </div>
+          </div>
+
+          <div class="grid3" style="margin-bottom:20px">
+            <div style="background:var(--s2);border-radius:12px;padding:16px;text-align:center">
+              <div style="font-size:.7rem;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Lucro Atual</div>
+              <div style="font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.45rem;color:var(--t)" id="sim-atual">R$ 35.200</div>
+            </div>
+            <div style="background:linear-gradient(135deg,rgba(52,211,153,.1),rgba(52,211,153,.05));border:1px solid rgba(52,211,153,.2);border-radius:12px;padding:16px;text-align:center">
+              <div style="font-size:.7rem;color:var(--g);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Lucro Projetado</div>
+              <div style="font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.45rem;color:var(--g)" id="sim-projetado">R$ 44.300</div>
+            </div>
+            <div style="background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:16px;text-align:center">
+              <div style="font-size:.7rem;color:var(--p-2);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px">Aumento</div>
+              <div style="font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.45rem;color:var(--p-2)" id="sim-aumento">+25,8%</div>
+            </div>
+          </div>
+
+          <div class="ai-box">
+            <div class="ai-icon">🤖</div>
+            <div class="ai-content">
+              <div class="ai-label">Análise IA — Projeção Detalhada</div>
+              <div class="ai-text" id="sim-texto">Caso a empresa reduza os gastos operacionais em 10%, o lucro poderá aumentar para R$ 44.300 no próximo mês. O fluxo de caixa permanecerá saudável e o Score Financeiro poderá subir de 85 para 91 pontos. Risco de implementação: baixo.</div>
+            </div>
+          </div>
+
+          <!-- Score antes/depois -->
+          <div style="display:flex;align-items:center;gap:16px;margin-top:16px;padding:14px;background:var(--s2);border-radius:12px;flex-wrap:wrap">
+            <div style="text-align:center;flex:1">
+              <div style="font-size:.72rem;color:var(--t3);margin-bottom:4px">Score Atual</div>
+              <div style="font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.8rem;color:var(--t2)" id="sim-score-antes">85</div>
+            </div>
+            <div style="font-size:1.5rem;color:var(--p-2)">→</div>
+            <div style="text-align:center;flex:1">
+              <div style="font-size:.72rem;color:var(--g);margin-bottom:4px">Score Projetado</div>
+              <div style="font-family:'Cabinet Grotesk',sans-serif;font-weight:800;font-size:1.8rem;color:var(--g)" id="sim-score-depois">91</div>
+            </div>
+            <div style="font-size:.82rem;color:var(--t2);flex:2;min-width:150px" id="sim-obs">Melhora de 6 pontos no Score Financeiro IA</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- CHAT IA PANEL -->
+<div class="ia-chat-panel" id="ia-chat">
+  <div class="ia-chat-header">
+    <div class="ia-chat-title">
+      <div class="ia-dot"></div>
+      Assistente IA Financeiro
+    </div>
+    <button class="icon-btn" onclick="toggleIA()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="ia-messages" id="ia-messages">
+    <div class="ia-msg ia-msg-bot">👋 Olá! Sou a IA Financeira da NuEmpresas. Posso analisar seus dados e responder perguntas sobre a saúde financeira da sua empresa.</div>
+  </div>
+  <div class="ia-input-area">
+    <div class="ia-quick-btns">
+      <div class="ia-quick" onclick="iaQuick('Qual meu maior gasto?')">Qual meu maior gasto?</div>
+      <div class="ia-quick" onclick="iaQuick('Estou tendo lucro?')">Estou tendo lucro?</div>
+      <div class="ia-quick" onclick="iaQuick('Onde posso economizar?')">Onde posso economizar?</div>
+    </div>
+    <div class="ia-input-row">
+      <input class="ia-input" id="ia-input" placeholder="Pergunte algo para a IA..." onkeydown="if(event.key==='Enter')sendIA()"/>
+      <button class="ia-send" onclick="sendIA()">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FLOAT IA BTN -->
+<button class="ai-float" id="ai-float-btn" onclick="toggleIA()">
+  <div class="ai-float-pulse"></div>
+  🤖 Perguntar à IA
+</button>
+
+<!-- TOAST -->
+<div class="toast" id="_toast"><span id="_toast-msg"></span></div>
+
+<script>
+// NAVIGATION
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showTab(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn){
+    document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  document.querySelector('.main').scrollTo({top:0,behavior:'smooth'});
+}
+
+// AUTH
+function doLogin(){
+  const cnpj=document.getElementById('login-cnpj').value.trim();
+  const pass=document.getElementById('login-pass').value.trim();
+  if(!cnpj||!pass){toast('⚠️ Preencha CNPJ e senha');return}
+  showScreen('app');
+  showTab('dashboard',document.querySelector('.nav-btn'));
+  toast('✅ Acesso realizado — Bem-vinda, Tech Solutions!');
+}
+function doCadastro(){
+  toast('🎉 Empresa cadastrada! Faça login.');
+  showScreen('login');
+}
+
+// UPLOAD
+function dragOver(e){e.preventDefault();document.getElementById('upload-zone').classList.add('drag-over')}
+function dragLeave(e){document.getElementById('upload-zone').classList.remove('drag-over')}
+function dropFile(e){
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('drag-over');
+  const file=e.dataTransfer.files[0];
+  if(file)toast('📊 Arquivo "'+file.name+'" recebido! Processando...');
+}
+function handleFile(input){
+  const file=input.files[0];
+  if(file)toast('📊 Arquivo "'+file.name+'" importado com sucesso!');
+}
+
+// RELATÓRIOS
+function selectReport(el,title){
+  document.querySelectorAll('.report-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('report-title').textContent='📋 '+title;
+  toast('📋 Carregando '+title);
+}
+
+// IA CHAT
+const iaResponses={
+  'qual meu maior gasto':'🤖 Seu maior gasto é com **Salários e Encargos**: R$ 35.400/mês, representando 38% das despesas totais.',
+  'estou tendo lucro':'🤖 Sim! Em Maio/2026 você registrou **lucro de R$ 35.200**, com margem de 27,4%. Excelente resultado!',
+  'onde posso economizar':'🤖 Identifiquei 3 oportunidades: (1) Cancelar software duplicado → economia de R$ 6.240/ano; (2) Renegociar fornecedores → potencial de -8%; (3) Reduzir despesas operacionais em 10% → R$ 9.320/mês.',
+  'default':'🤖 Analisando seus dados financeiros... Com base no perfil da sua empresa, posso observar que houve crescimento de receita de 8% e que as despesas estão em trajetória de atenção. Quer que eu detalhe algum ponto específico?'
+};
+
+function toggleIA(){
+  const panel=document.getElementById('ia-chat');
+  const btn=document.getElementById('ai-float-btn');
+  panel.classList.toggle('open');
+  btn.style.display=panel.classList.contains('open')?'none':'flex';
+}
+
+function addMsg(text,type){
+  const msgs=document.getElementById('ia-messages');
+  const div=document.createElement('div');
+  div.className='ia-msg ia-msg-'+type;
+  div.textContent=text;
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function sendIA(){
+  const input=document.getElementById('ia-input');
+  const text=input.value.trim();
+  if(!text)return;
+  addMsg(text,'user');
+  input.value='';
+  setTimeout(()=>{
+    const key=Object.keys(iaResponses).find(k=>text.toLowerCase().includes(k));
+    addMsg(key?iaResponses[key]:iaResponses['default'],'bot');
+  },900);
+}
+
+function iaQuick(q){
+  document.getElementById('ia-input').value=q;
+  sendIA();
+}
+
+// TOAST
+let _tt;
+function toast(msg){
+  clearTimeout(_tt);
+  const el=document.getElementById('_toast');
+  document.getElementById('_toast-msg').textContent=msg;
+  el.classList.add('show');
+  _tt=setTimeout(()=>el.classList.remove('show'),3500);
+}
+
+// SIMULADOR
+const cenarios={
+  'reduzir gastos em 10':{
+    sub:'Reduzir gastos operacionais em 10%',
+    atual:'R$ 35.200',projetado:'R$ 44.300',aumento:'+25,8%',
+    texto:'Caso a empresa reduza os gastos operacionais em 10%, o lucro poderá aumentar para R$ 44.300 no próximo mês. O fluxo de caixa permanecerá saudável e o Score Financeiro poderá subir de 85 para 91 pontos. Risco: baixo.',
+    sb4:'85',sd4:'91',obs:'Melhora de 6 pontos no Score Financeiro IA'
+  },
+  contratar2:{
+    sub:'Contratar 2 novos funcionários',
+    atual:'R$ 35.200',projetado:'R$ 27.800',aumento:'-21%',
+    texto:'Contratando 2 funcionários com salário médio de R$ 5.000, os custos mensais aumentam R$ 14.400 (salário + encargos). O lucro reduz para R$ 27.800 no curto prazo. No longo prazo, a capacidade produtiva pode recuperar a margem em 4 meses. Risco: médio.',
+    sb4:'85',sd4:'79',obs:'Score reduz temporariamente 6 pontos'
+  },
+  marketing20:{
+    sub:'Aumentar investimento em marketing em 20%',
+    atual:'R$ 35.200',projetado:'R$ 32.960',aumento:'-6,4%',
+    texto:'Um aumento de 20% no marketing eleva o custo em R$ 2.240/mês. A IA estima que a geração de leads aumente 18%, podendo recuperar o investimento em 2,5 meses. O impacto inicial é negativo, mas o potencial de receita futura é alto. Risco: médio-baixo.',
+    sb4:'85',sd4:'83',obs:'Score estável — decisão estratégica de crescimento'
+  },
+  fornecedor15:{
+    sub:'Reduzir custos com fornecedores em 15%',
+    atual:'R$ 35.200',projetado:'R$ 47.645',aumento:'+35,4%',
+    texto:'Renegociando contratos de fornecedores com desconto de 15%, a empresa economiza R$ 12.445/mês. Este é o cenário de maior impacto positivo identificado pela IA. O Score Financeiro pode atingir 94 pontos. Risco: baixo — altamente recomendado.',
+    sb4:'85',sd4:'94',obs:'Melhor cenário analisado — impacto máximo positivo'
+  },
+  filial:{
+    sub:'Abrir uma nova filial',
+    atual:'R$ 35.200',projetado:'-R$ 12.000',aumento:'-134%',
+    texto:'A abertura de uma nova filial representa investimento inicial estimado em R$ 120.000, com custos fixos mensais de R$ 47.200. A IA projeta 14 meses para atingir o ponto de equilíbrio. O fluxo de caixa ficará negativo nos primeiros 6 meses. Risco: alto.',
+    sb4:'85',sd4:'61',obs:'Score em zona crítica — planejamento financeiro essencial'
+  }
+};
+
+function simular(){
+  const q=document.getElementById('sim-input').value.toLowerCase();
+  let c=null;
+  if(q.includes('reduzir gastos')||q.includes('10%')||q.includes('10 por'))c=cenarios['reduzir gastos em 10'];
+  else if(q.includes('funcionario')||q.includes('funcionário'))c=cenarios.contratar2;
+  else if(q.includes('marketing'))c=cenarios.marketing20;
+  else if(q.includes('fornecedor'))c=cenarios.fornecedor15;
+  else if(q.includes('filial'))c=cenarios.filial;
+  else c=cenarios['reduzir gastos em 10'];
+  applySimResult(c);
+}
+
+function simCenario(key){
+  const c=cenarios[key];
+  const labels={contratar2:'Contratar 2 funcionários',marketing20:'Aumentar marketing em 20%',fornecedor15:'Reduzir fornecedores em 15%',filial:'Abrir nova filial'};
+  document.getElementById('sim-input').value='E se eu '+labels[key].toLowerCase()+'?';
+  applySimResult(c);
+}
+
+function applySimResult(c){
+  document.getElementById('sim-subtitulo').textContent=c.sub;
+  document.getElementById('sim-atual').textContent=c.atual;
+  document.getElementById('sim-projetado').textContent=c.projetado;
+  document.getElementById('sim-aumento').textContent=c.aumento;
+  document.getElementById('sim-texto').textContent=c.texto;
+  document.getElementById('sim-score-antes').textContent=c.sb4;
+  document.getElementById('sim-score-depois').textContent=c.sd4;
+  document.getElementById('sim-obs').textContent=c.obs;
+  const inc=c.aumento.startsWith('+');
+  document.getElementById('sim-projetado').style.color=inc?'var(--g)':'var(--r)';
+  document.getElementById('sim-aumento').style.color=inc?'var(--p-2)':'var(--r)';
+  document.getElementById('sim-score-depois').style.color=parseInt(c.sd4)>=parseInt(c.sb4)?'var(--g)':'var(--r)';
+  toast('🤖 Simulação concluída — '+c.sub);
+}
+
+function openAnomalia(){toast('🔍 Processo de investigação iniciado para Serviços Externos!')}
+
+// KEYBOARD
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('login').classList.contains('active'))doLogin();
+});
+</script>
+</body>
+</html>
